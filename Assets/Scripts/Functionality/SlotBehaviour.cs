@@ -17,7 +17,9 @@ public class SlotBehaviour : MonoBehaviour
     [SerializeField]
     private List<SlotImage> images;     //class to store total images
     [SerializeField]
-    private List<SlotImage> Tempimages;     //class to store the result matrix
+    internal List<SlotImage> Tempimages;     //class to store the result matrix
+    [SerializeField]
+    private AnimationController m_AnimationController;
 
     [Header("Slots Elements")]
     [SerializeField]
@@ -371,49 +373,49 @@ public class SlotBehaviour : MonoBehaviour
                 {
                     animScript.textureArray.Add(Cat_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 12f;
+                animScript.AnimationSpeed = 15f;
                 break;
             case 7:
                 for (int i = 0; i < Eagle_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(Eagle_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 12f;
+                animScript.AnimationSpeed = 15f;
                 break;
             case 8:
                 for (int i = 0; i < Bear_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(Bear_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 12f;
+                animScript.AnimationSpeed = 15f;
                 break;
             case 9:
                 for (int i = 0; i < Wolf_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(Wolf_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 30f;
+                animScript.AnimationSpeed = 15f;
                 break;
             case 10:
                 for (int i = 0; i < Buffalo_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(Buffalo_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 30f;
+                animScript.AnimationSpeed = 100f;
                 break;
             case 11:
                 for (int i = 0; i < Gold_Buffalo.Length; i++)
                 {
                     animScript.textureArray.Add(Gold_Buffalo[i]);
                 }
-                animScript.AnimationSpeed = 30f;
+                animScript.AnimationSpeed = 20f;
                 break;
             case 12:
                 for (int i = 0; i < Landscape_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(Landscape_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 30f;
+                animScript.AnimationSpeed = 50f;
                 break;
             case 13:
                 for (int i = 0; i < Bonus_Sprite.Length; i++)
@@ -469,6 +471,9 @@ public class SlotBehaviour : MonoBehaviour
 
         ToggleButtonGrp(false);
 
+        m_AnimationController.StopAnimation();
+        //ResetRectSizes();
+
         for (int i = 0; i < numberOfSlots; i++)
         {
             InitializeTweening(Slot_Transform[i]);
@@ -488,9 +493,9 @@ public class SlotBehaviour : MonoBehaviour
         int[,] m_DemoResponse =
             {
                 { 1, 2, 3, 4, 5, 6 },
-                { 3, 2, 1, 5, 0, 4},
-                { 2, 3, 4, 8, 1, 0 },
-                { 4, 3, 2, 9, 7, 5}
+                { 3, 10, 1, 5, 0, 4},
+                { 2, 3, 4, 12, 1, 0 },
+                { 4, 3, 11, 9, 7, 5}
             };
         //for (int j = 0; j < SocketManager.resultData.ResultReel.Count; j++)
         //{
@@ -506,6 +511,14 @@ public class SlotBehaviour : MonoBehaviour
             for(int j = 0; j < Tempimages[i].slotImages.Count; j++)
             {
                 Tempimages[i].slotImages[j].sprite = myImages[m_DemoResponse[j, i]];
+                m_AnimationController.m_AnimatedSlots[i].slotImages[j].sprite = myImages[m_DemoResponse[j, i]];
+                PopulateAnimationSprites(m_AnimationController.m_AnimatedSlots[i].slotImages[j].gameObject.GetComponent<ImageAnimation>(), m_DemoResponse[j, i]);
+
+                //if(m_DemoResponse[j, i] >= 6 && m_DemoResponse[j, i] <= 12)
+                //{
+                //    Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(220, 220);
+                //    m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(220, 220);
+                //}
             }
         }
 
@@ -520,6 +533,7 @@ public class SlotBehaviour : MonoBehaviour
 
         //HACK: Check For The Result And Activate Animations Accordingly
         //CheckPayoutLineBackend(SocketManager.resultData.linesToEmit, SocketManager.resultData.FinalsymbolsToEmit, SocketManager.resultData.jackpot);
+        m_AnimationController.StartAnimation();
 
         //HACK: Kills The Tweens So That They Will Get Ready For Next Spin
         KillAllTweens();
@@ -748,6 +762,17 @@ public class SlotBehaviour : MonoBehaviour
         TempList.TrimExcess();
     }
 
+    private void ResetRectSizes()
+    {
+        for(int i = 0; i < Tempimages.Count; i++)
+        {
+            for(int j = 0; j < Tempimages[i].slotImages.Count; j++)
+            {
+                Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(180, 180);
+                m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(180, 180);
+            }
+        }
+    }
 
     #region TweeningCode
     private void InitializeTweening(Transform slotTransform)

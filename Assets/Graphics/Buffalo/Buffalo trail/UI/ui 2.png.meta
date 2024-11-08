@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d8098a8d0bfbe409c8c04337a8ee6a4a
+guid: daec80f3c1794485d83584a8307f01e0
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -136,13 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: wolf (1)_0
+      name: ui 2_0
       rect:
         serializedVersion: 2
-        x: 18
-        y: 8
-        width: 244
-        height: 193
+        x: 110
+        y: 759
+        width: 1413
+        height: 308
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,8 +150,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 157814c09bff84078aa1f04b2b754b77
-      internalID: -853401602
+      spriteID: 1dcfb5f6955ab44d3adb30f7ec0aa6b6
+      internalID: 759752869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ui 2_1
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 403
+        width: 1283
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 536724629d90e4e0f95b22cbce3e12c8
+      internalID: -1304631289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ui 2_2
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 50
+        width: 1511
+        height: 238
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 507f40872e0734e2cb31cf57f2e19e52
+      internalID: -1590504944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ui 2_3
+      rect:
+        serializedVersion: 2
+        x: 1819
+        y: 128
+        width: 19
+        height: 822
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c33aaab442af4f188b404ca9cc4dd86
+      internalID: -1132311635
       vertices: []
       indices: 
       edges: []
@@ -167,8 +230,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      wolf (1)_0: -853401602
-      wolf (1)_1: -1026328014
+      ui 2_0: 759752869
+      ui 2_1: -1304631289
+      ui 2_2: -1590504944
+      ui 2_3: -1132311635
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
