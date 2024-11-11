@@ -51,6 +51,8 @@ public class SlotBehaviour : MonoBehaviour
     private Button BetPlus_Button;
     [SerializeField]
     private Button BetMinus_Button;
+    [SerializeField]
+    private Button m_BetButton;
 
     [Header("Animated Sprites")]
     [SerializeField]
@@ -116,6 +118,12 @@ public class SlotBehaviour : MonoBehaviour
     [SerializeField]
     private SocketIOManager SocketManager;
 
+    [SerializeField]
+    private List<string> m_Instructions;
+
+    [SerializeField]
+    private List<OrderingUI> m_UI_Order = new List<OrderingUI>();
+
     private Coroutine AutoSpinRoutine = null;
     private Coroutine FreeSpinRoutine = null;
     private Coroutine tweenroutine;
@@ -135,6 +143,12 @@ public class SlotBehaviour : MonoBehaviour
     private int numberOfSlots = 6;          //number of columns
 
 
+    private void Awake()
+    {
+        currentBalance = 160.2346;
+        Balance_text.text = currentBalance.ToString();
+    }
+
     private void Start()
     {
         IsAutoSpin = false;
@@ -142,13 +156,19 @@ public class SlotBehaviour : MonoBehaviour
         if (SlotStart_Button) SlotStart_Button.onClick.RemoveAllListeners();
         if (SlotStart_Button) SlotStart_Button.onClick.AddListener(delegate { StartSlots(); });
 
-        if (BetPlus_Button) BetPlus_Button.onClick.RemoveAllListeners();
-        if (BetPlus_Button) BetPlus_Button.onClick.AddListener(delegate { ChangeBet(true); });
-        if (BetMinus_Button) BetMinus_Button.onClick.RemoveAllListeners();
-        if (BetMinus_Button) BetMinus_Button.onClick.AddListener(delegate { ChangeBet(false); });
+        //if (BetPlus_Button) BetPlus_Button.onClick.RemoveAllListeners();
+        //if (BetPlus_Button) BetPlus_Button.onClick.AddListener(delegate { ChangeBet(true); });
+        //if (BetMinus_Button) BetMinus_Button.onClick.RemoveAllListeners();
+        //if (BetMinus_Button) BetMinus_Button.onClick.AddListener(delegate { ChangeBet(false); });
 
-        if (MaxBet_Button) MaxBet_Button.onClick.RemoveAllListeners();
-        if (MaxBet_Button) MaxBet_Button.onClick.AddListener(MaxBet);
+        //if (MaxBet_Button) MaxBet_Button.onClick.RemoveAllListeners();
+        //if (MaxBet_Button) MaxBet_Button.onClick.AddListener(MaxBet);
+
+        if (m_BetButton) m_BetButton.onClick.RemoveAllListeners();
+        if (m_BetButton) m_BetButton.onClick.AddListener(() =>
+        {
+            uiManager.OpenBetPanel();
+        });
 
         if (AutoSpin_Button) AutoSpin_Button.onClick.RemoveAllListeners();
         if (AutoSpin_Button) AutoSpin_Button.onClick.AddListener(AutoSpin);
@@ -160,6 +180,14 @@ public class SlotBehaviour : MonoBehaviour
         if (FSBoard_Object) FSBoard_Object.SetActive(false);
 
         tweenHeight = (myImages.Length * IconSizeFactor) - 280;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            ResetRectSizes();
+        }
     }
 
     #region Autospin
@@ -328,6 +356,16 @@ public class SlotBehaviour : MonoBehaviour
         CompareBalance();
     }
 
+    internal void OnBetClicked(int Bet, float Value)
+    {
+        if (audioController) audioController.PlayButtonAudio();
+        BetCounter = Bet;
+        if (LineBet_text) LineBet_text.text = Value.ToString();
+        if (TotalBet_text) TotalBet_text.text = (Value).ToString();
+        currentTotalBet = Value;
+        CompareBalance();
+    }
+
     #region InitialFunctions
     internal void shuffleInitialMatrix()
     {
@@ -380,7 +418,7 @@ public class SlotBehaviour : MonoBehaviour
                 {
                     animScript.textureArray.Add(Eagle_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 15f;
+                animScript.AnimationSpeed = 40f;
                 break;
             case 8:
                 for (int i = 0; i < Bear_Sprite.Length; i++)
@@ -471,8 +509,12 @@ public class SlotBehaviour : MonoBehaviour
 
         ToggleButtonGrp(false);
 
+        ResetRectSizes();
+
         m_AnimationController.StopAnimation();
         //ResetRectSizes();
+
+        TotalWin_text.text = m_Instructions[1];
 
         for (int i = 0; i < numberOfSlots; i++)
         {
@@ -492,9 +534,9 @@ public class SlotBehaviour : MonoBehaviour
         //Populate The Tempimages To Show The Result Images.
         int[,] m_DemoResponse =
             {
-                { 1, 2, 3, 4, 5, 6 },
+                { 1, 7, 3, 4, 5, 6 },
                 { 3, 10, 1, 5, 0, 4},
-                { 2, 3, 4, 12, 1, 0 },
+                { 2, 10, 4, 12, 1, 0 },
                 { 4, 3, 11, 9, 7, 5}
             };
         //for (int j = 0; j < SocketManager.resultData.ResultReel.Count; j++)
@@ -514,11 +556,25 @@ public class SlotBehaviour : MonoBehaviour
                 m_AnimationController.m_AnimatedSlots[i].slotImages[j].sprite = myImages[m_DemoResponse[j, i]];
                 PopulateAnimationSprites(m_AnimationController.m_AnimatedSlots[i].slotImages[j].gameObject.GetComponent<ImageAnimation>(), m_DemoResponse[j, i]);
 
-                //if(m_DemoResponse[j, i] >= 6 && m_DemoResponse[j, i] <= 12)
-                //{
-                //    Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(220, 220);
-                //    m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(220, 220);
-                //}
+                if (m_DemoResponse[j, i] >= 10 && m_DemoResponse[j, i] <= 12)
+                {
+                    if(m_DemoResponse[j, i] == 11)
+                    {
+                        Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(350, 350);//297,240
+                        m_UI_Order.Add(new OrderingUI
+                        {
+                            child_index = Tempimages[i].slotImages[j].transform.GetSiblingIndex(),
+                            this_parent = Tempimages[i].slotImages[j].transform.parent,
+                            current_object = Tempimages[i].slotImages[j].transform
+                        });
+                        Tempimages[i].slotImages[j].transform.SetAsLastSibling();
+                    }
+                    else
+                    {
+                        Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(268, 210);//297,240
+                    }
+                    //m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(297, 240);
+                }
             }
         }
 
@@ -530,6 +586,9 @@ public class SlotBehaviour : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.3f);
+
+        //HACK: Instruction Updated After Spin Ends If Wins then it shouldn't be updated other wise it will prompt 0th index
+        TotalWin_text.text = m_Instructions[0];
 
         //HACK: Check For The Result And Activate Animations Accordingly
         //CheckPayoutLineBackend(SocketManager.resultData.linesToEmit, SocketManager.resultData.FinalsymbolsToEmit, SocketManager.resultData.jackpot);
@@ -622,6 +681,7 @@ public class SlotBehaviour : MonoBehaviour
         {
             if (Balance_text) Balance_text.text = initAmount.ToString("f2");
         });
+        currentBalance = balance;
     }
 
     internal void CheckWinPopups()
@@ -737,7 +797,7 @@ public class SlotBehaviour : MonoBehaviour
         if (AutoSpin_Button) AutoSpin_Button.interactable = toggle;
         if (BetMinus_Button) BetMinus_Button.interactable = toggle;
         if (BetPlus_Button) BetPlus_Button.interactable = toggle;
-
+        if (m_BetButton) m_BetButton.interactable = toggle;
     }
 
     //start the icons animation
@@ -768,10 +828,19 @@ public class SlotBehaviour : MonoBehaviour
         {
             for(int j = 0; j < Tempimages[i].slotImages.Count; j++)
             {
-                Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(180, 180);
-                m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(180, 180);
+                Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(242, 185);
+                //m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(180, 180);
             }
         }
+
+        foreach(var i in m_UI_Order)
+        {
+            //i.current_object.SetParent(i.this_parent);
+            i.current_object.SetSiblingIndex(i.child_index);
+        }
+
+        m_UI_Order.Clear();
+        m_UI_Order.TrimExcess();
     }
 
     #region TweeningCode
@@ -813,3 +882,10 @@ public class SlotImage
     public List<Image> slotImages = new List<Image>(10);
 }
 
+[Serializable]
+public struct OrderingUI
+{
+    public int child_index;
+    public Transform this_parent;
+    public Transform current_object;
+}
