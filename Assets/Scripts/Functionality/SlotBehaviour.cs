@@ -142,7 +142,6 @@ public class SlotBehaviour : MonoBehaviour
     private int IconSizeFactor = 100;       //set this parameter according to the size of the icon and spacing
     private int numberOfSlots = 6;          //number of columns
 
-
     private void Awake()
     {
         currentBalance = 160.2346;
@@ -411,35 +410,35 @@ public class SlotBehaviour : MonoBehaviour
                 {
                     animScript.textureArray.Add(Cat_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 15f;
+                animScript.AnimationSpeed = 60f;
                 break;
             case 7:
                 for (int i = 0; i < Eagle_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(Eagle_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 40f;
+                animScript.AnimationSpeed = 60f;
                 break;
             case 8:
                 for (int i = 0; i < Bear_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(Bear_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 15f;
+                animScript.AnimationSpeed = 30f;
                 break;
             case 9:
                 for (int i = 0; i < Wolf_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(Wolf_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 15f;
+                animScript.AnimationSpeed = 60f;
                 break;
             case 10:
                 for (int i = 0; i < Buffalo_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(Buffalo_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 100f;
+                animScript.AnimationSpeed = 50f;
                 break;
             case 11:
                 for (int i = 0; i < Gold_Buffalo.Length; i++)
@@ -512,7 +511,6 @@ public class SlotBehaviour : MonoBehaviour
         ResetRectSizes();
 
         m_AnimationController.StopAnimation();
-        //ResetRectSizes();
 
         TotalWin_text.text = m_Instructions[1];
 
@@ -534,9 +532,9 @@ public class SlotBehaviour : MonoBehaviour
         //Populate The Tempimages To Show The Result Images.
         int[,] m_DemoResponse =
             {
-                { 1, 7, 3, 4, 5, 6 },
-                { 3, 10, 1, 5, 0, 4},
-                { 2, 10, 4, 12, 1, 0 },
+                { 1, 7, 3, 8, 5, 6 },
+                { 3, 10, 1, 11, 9, 4},
+                { 2, 8, 4, 12, 1, 0 },
                 { 4, 3, 11, 9, 7, 5}
             };
         //for (int j = 0; j < SocketManager.resultData.ResultReel.Count; j++)
@@ -548,6 +546,8 @@ public class SlotBehaviour : MonoBehaviour
         //        PopulateAnimationSprites(images[i].slotImages[images[i].slotImages.Count - 5 + j].gameObject.GetComponent<ImageAnimation>(), resultnum[i]);
         //    }
         //}
+        OrderingUI m_order;
+        OrderingUI m_anim_order;
         for(int i = 0; i < Tempimages.Count; i++)
         {
             for(int j = 0; j < Tempimages[i].slotImages.Count; j++)
@@ -556,27 +556,86 @@ public class SlotBehaviour : MonoBehaviour
                 m_AnimationController.m_AnimatedSlots[i].slotImages[j].sprite = myImages[m_DemoResponse[j, i]];
                 PopulateAnimationSprites(m_AnimationController.m_AnimatedSlots[i].slotImages[j].gameObject.GetComponent<ImageAnimation>(), m_DemoResponse[j, i]);
 
-                if (m_DemoResponse[j, i] >= 10 && m_DemoResponse[j, i] <= 12)
+                if (m_DemoResponse[j, i] >= 6 && m_DemoResponse[j, i] <= 12)
                 {
-                    if(m_DemoResponse[j, i] == 11)
+                    m_order = new OrderingUI
                     {
-                        Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(350, 350);//297,240
-                        m_UI_Order.Add(new OrderingUI
-                        {
-                            child_index = Tempimages[i].slotImages[j].transform.GetSiblingIndex(),
-                            this_parent = Tempimages[i].slotImages[j].transform.parent,
-                            current_object = Tempimages[i].slotImages[j].transform
-                        });
-                        Tempimages[i].slotImages[j].transform.SetAsLastSibling();
-                    }
-                    else
+                        m_Priority = Priority.Gold_Buffalo,
+                        child_index = Tempimages[i].slotImages[j].transform.GetSiblingIndex(),
+                        this_parent = Tempimages[i].slotImages[j].transform.parent,
+                        current_object = Tempimages[i].slotImages[j].transform,
+                        current_position = Tempimages[i].slotImages[j].transform.localPosition
+                    };
+
+                    m_anim_order = new OrderingUI
                     {
-                        Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(268, 210);//297,240
+                        m_Priority = Priority.Wolf,
+                        child_index = m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.GetSiblingIndex(),
+                        this_parent = m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.parent,
+                        current_object = m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform,
+                        current_position = m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition
+                    };
+
+                    switch(m_DemoResponse[j, i])
+                    {
+                        case (6):
+                            m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(245, 200);
+                            m_order.m_Priority = Priority.Lion;
+                            m_anim_order.m_Priority = Priority.Lion;
+                            break;
+                        case (7):
+                            m_order.m_Priority = Priority.Eagle;
+                            m_anim_order.m_Priority = Priority.Eagle;
+                            break;
+                        case (8):
+                            m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(245, 195);
+                            m_order.m_Priority = Priority.Bear;
+                            m_anim_order.m_Priority = Priority.Bear;
+                            break;
+                        case (9):
+                            m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(245, 245);
+                            //m_UI_Order.Add();
+
+                            m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition -= Vector3.up * 20;
+
+                            m_order.m_Priority = Priority.Wolf;
+                            m_anim_order.m_Priority = Priority.Wolf;
+                            break;
+                        case (10):
+                            Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(290, 230);//297,240
+                            //m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(290, 230);
+                            m_order.m_Priority = Priority.Buffalo;
+                            m_anim_order.m_Priority = Priority.Buffalo;
+                            break;
+                        case (11):
+                            Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(280, 220);//297,240
+                            m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(300, 300);
+                            m_order.m_Priority = Priority.Gold_Buffalo;
+                            m_anim_order.m_Priority = Priority.Gold_Buffalo;
+                            //Tempimages[i].slotImages[j].transform.SetAsLastSibling();
+                            break;
+                        case (12):
+                            Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(268, 210);//297,240
+                            m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(268, 230);
+
+                            Tempimages[i].slotImages[j].transform.localPosition += Vector3.up * 30;
+                            m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition += Vector3.up * 30;
+
+                            m_order.m_Priority = Priority.Landscape;
+                            m_anim_order.m_Priority = Priority.Landscape;
+                            break;
+                        default:
+                            break;
+                        //m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(297, 240);
+
                     }
-                    //m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(297, 240);
+                    m_UI_Order.Add(m_order);
+                    m_UI_Order.Add(m_anim_order);
                 }
             }
         }
+
+        PrioritizeList();
 
         yield return new WaitForSeconds(0.5f);
 
@@ -829,7 +888,7 @@ public class SlotBehaviour : MonoBehaviour
             for(int j = 0; j < Tempimages[i].slotImages.Count; j++)
             {
                 Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(242, 185);
-                //m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(180, 180);
+                m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(242, 185);
             }
         }
 
@@ -837,10 +896,23 @@ public class SlotBehaviour : MonoBehaviour
         {
             //i.current_object.SetParent(i.this_parent);
             i.current_object.SetSiblingIndex(i.child_index);
+            i.current_object.localPosition = i.current_position;
         }
 
         m_UI_Order.Clear();
         m_UI_Order.TrimExcess();
+    }
+
+    private void PrioritizeList()
+    {
+        //m_UI_Order.Sort((x, y) => y.m_Priority.CompareTo(x.m_Priority)); //Descending
+        m_UI_Order.Sort((x, y) => x.m_Priority.CompareTo(y.m_Priority)); //Asscending
+
+        foreach(var i in m_UI_Order)
+        {
+            i.current_object.SetAsLastSibling();
+        }
+
     }
 
     #region TweeningCode
@@ -851,8 +923,6 @@ public class SlotBehaviour : MonoBehaviour
         tweener.Play();
         alltweens.Add(tweener);
     }
-
-
 
     private IEnumerator StopTweening(int reqpos, Transform slotTransform, int index)
     {
@@ -885,7 +955,21 @@ public class SlotImage
 [Serializable]
 public struct OrderingUI
 {
+    public Priority m_Priority;
     public int child_index;
     public Transform this_parent;
     public Transform current_object;
+    public Vector3 current_position;
+}
+
+[Serializable]
+public enum Priority
+{
+    Gold_Buffalo = 7,
+    Landscape = 6,
+    Buffalo = 5,
+    Bear = 4,
+    Wolf = 3,
+    Lion = 2,
+    Eagle = 1
 }
