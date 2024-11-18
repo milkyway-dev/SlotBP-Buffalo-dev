@@ -351,7 +351,7 @@ public class UIManager : MonoBehaviour
             m_BetPanel.SetActive(false);
         });
 
-        AssignBetButtons(m_DummyBetValues);
+        //AssignBetButtons(m_DummyBetValues);
 
     }
 
@@ -363,7 +363,7 @@ public class UIManager : MonoBehaviour
     }
 
     #region [[===BET BUTTONS HANDLING===]]
-    private void AssignBetButtons(List<float> m_bet_items)
+    internal void AssignBetButtons(List<double> m_bet_items)
     {
         for (int i = 0; i < m_BetButtons.Count; i++)
         {
@@ -376,7 +376,7 @@ public class UIManager : MonoBehaviour
                 m_Temp_Bet.onClick.AddListener(() =>
                 {
                     m_BetPanel.SetActive(false);
-                    slotManager.OnBetClicked(GetBetCounter(m_Temp_Bet), float.Parse(m_Temp_Bet.transform.GetChild(0).GetComponent<TMP_Text>().text));
+                    slotManager.OnBetClicked(GetBetCounter(m_Temp_Bet), double.Parse(m_Temp_Bet.transform.GetChild(0).GetComponent<TMP_Text>().text));
                 });
             }
             else
@@ -507,15 +507,19 @@ public class UIManager : MonoBehaviour
             string text = null;
             if (paylines.symbols[i].Multiplier[0][0] != 0)
             {
-                text += "5x - " + paylines.symbols[i].Multiplier[0][0];
+                text += "<color=yellow>5x - </color>" + paylines.symbols[i].Multiplier[0][0];
             }
             if (paylines.symbols[i].Multiplier[1][0] != 0)
             {
-                text += "\n4x - " + paylines.symbols[i].Multiplier[1][0];
+                text += "<color=yellow>\n4x - </color>" + paylines.symbols[i].Multiplier[1][0];
             }
             if (paylines.symbols[i].Multiplier[2][0] != 0)
             {
-                text += "\n3x - " + paylines.symbols[i].Multiplier[2][0];
+                text += "<color=yellow>\n3x - </color>" + paylines.symbols[i].Multiplier[2][0];
+            }
+            if(paylines.symbols[i].Multiplier[3][0] != 0)
+            {
+                text += "<color=yellow>\n4x - </color>" + paylines.symbols[i].Multiplier[3][0];
             }
             if (SymbolsText[i]) SymbolsText[i].text = text;
         }

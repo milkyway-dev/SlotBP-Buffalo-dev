@@ -37,13 +37,15 @@ public class SocketIOManager : MonoBehaviour
     internal JSHandler _jsManager;
 
     protected string SocketURI = null;
-    protected string TestSocketURI = "https://game-crm-rtp-backend.onrender.com/";
+    //protected string TestSocketURI = "https://game-crm-rtp-backend.onrender.com/";
+    protected string TestSocketURI = "http://localhost:5000";
     //protected string TestSocketURI = "https://7p68wzhv-5000.inc1.devtunnels.ms/";
 
     [SerializeField]
     private string testToken;
 
-    protected string gameID = "SL-VIK";
+    //protected string gameID = "SL-BT";
+    protected string gameID = "";
 
     internal bool isLoaded = false;
 
@@ -63,7 +65,7 @@ public class SocketIOManager : MonoBehaviour
     private void Start()
     {
         //OpenWebsocket();
-        //OpenSocket();
+        OpenSocket();
     }
 
     void ReceiveAuthToken(string jsonData)
@@ -283,10 +285,11 @@ public class SocketIOManager : MonoBehaviour
                     if (!SetInit)
                     {
                         Debug.Log(jsonObject);
-                        List<string> LinesString = ConvertListListIntToListString(initialData.Lines);
-                        List<string> InitialReels = ConvertListOfListsToStrings(initialData.Reel);
-                        InitialReels = RemoveQuotes(InitialReels);
-                        PopulateSlotSocket(InitialReels, LinesString);
+                        //List<string> LinesString = ConvertListListIntToListString(initialData.Lines);
+                        //List<string> InitialReels = ConvertListOfListsToStrings(initialData.Reel);
+                        //InitialReels = RemoveQuotes(InitialReels);
+                        //PopulateSlotSocket(InitialReels, LinesString);
+                        PopulateSlotSocket();
                         SetInit = true;
                     }
                     else
@@ -323,13 +326,13 @@ public class SocketIOManager : MonoBehaviour
         uiManager.InitialiseUIData(initUIData.AbtLogo.link, initUIData.AbtLogo.logoSprite, initUIData.ToULink, initUIData.PopLink, initUIData.paylines);
     }
 
-    private void PopulateSlotSocket(List<string> slotPop, List<string> LineIds)
+    private void PopulateSlotSocket()//List<string> slotPop, List<string> LineIds
     {
         slotManager.shuffleInitialMatrix();
-        for (int i = 0; i < LineIds.Count; i++)
-        {
-            slotManager.FetchLines(LineIds[i], i);
-        }
+        //for (int i = 0; i < LineIds.Count; i++)
+        //{
+        //    slotManager.FetchLines(LineIds[i], i);
+        //}
 
         slotManager.SetInitialUI();
 
