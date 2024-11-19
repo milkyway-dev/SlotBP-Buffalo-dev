@@ -40488,6 +40488,7 @@ MonoBehaviour:
     - {fileID: 1159111724}
     - {fileID: 887265468}
   m_AnimationController: {fileID: 757520300}
+  m_MainUIMask: {fileID: 1574897786}
   Slot_Elements:
   - {fileID: 0}
   - {fileID: 0}

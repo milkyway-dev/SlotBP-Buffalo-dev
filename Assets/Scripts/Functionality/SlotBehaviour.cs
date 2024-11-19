@@ -144,13 +144,13 @@ public class SlotBehaviour : MonoBehaviour
     private int IconSizeFactor = 100;       //set this parameter according to the size of the icon and spacing
     private int numberOfSlots = 6;          //number of columns
 
-    protected internal int[,] m_DemoResponse =
-            {
-                { 1, 7, 3, 8, 5, 6 },
-                { 3, 10, 1, 11, 9, 4},
-                { 2, 8, 4, 12, 1, 0 },
-                { 4, 3, 11, 9, 7, 5}
-            };
+    //protected internal int[,] m_DemoResponse =
+    //        {
+    //            { 1, 7, 3, 8, 5, 6 },
+    //            { 3, 10, 1, 11, 9, 4},
+    //            { 2, 8, 4, 12, 1, 0 },
+    //            { 4, 3, 11, 9, 7, 5}
+    //        };
 
     private void Awake()
     {
@@ -523,11 +523,9 @@ public class SlotBehaviour : MonoBehaviour
 
         ToggleButtonGrp(false);
 
-        ResetRectSizes();
-
-        m_AnimationController.StopAnimation();
-
         TotalWin_text.text = m_Instructions[1];
+
+        m_MainUIMask.enabled = true;
 
         for (int i = 0; i < numberOfSlots; i++)
         {
@@ -535,14 +533,18 @@ public class SlotBehaviour : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
+        ResetRectSizes();
+
+        m_AnimationController.StopAnimation();
+
         if (!IsFreeSpin)
         {
             BalanceDeduction();
         }
 
         //HACK: This will be used when to send the spin instruction to the socket and wait for the socket to receive the request.
-        //SocketManager.AccumulateResult(BetCounter);
-        //yield return new WaitUntil(() => SocketManager.isResultdone);
+        SocketManager.AccumulateResult(BetCounter);
+        yield return new WaitUntil(() => SocketManager.isResultdone);
 
         //Populate The Tempimages To Show The Result Images.
         //for (int j = 0; j < SocketManager.resultData.ResultReel.Count; j++)
@@ -560,10 +562,11 @@ public class SlotBehaviour : MonoBehaviour
         {
             for(int j = 0; j < Tempimages[i].slotImages.Count; j++)
             {
-                Tempimages[i].slotImages[j].sprite = myImages[m_DemoResponse[j, i]];
+                //Tempimages[i].slotImages[j].sprite = myImages[m_DemoResponse[j, i]];
+                Tempimages[i].slotImages[j].sprite = myImages[SocketManager.resultData.resultMatrix[j][i]];
                 m_order = new OrderingUI { };
                 m_anim_order = new OrderingUI { };
-                SlotControl(i, j, m_DemoResponse[j, i], m_order, m_anim_order);
+                SlotControl(i, j, SocketManager.resultData.resultMatrix[j][i], m_order, m_anim_order);
             }
         }
 
@@ -576,6 +579,8 @@ public class SlotBehaviour : MonoBehaviour
             yield return StopTweening(6, Slot_Transform[i], i);
         }
 
+        m_MainUIMask.enabled = false;
+
         yield return new WaitForSeconds(0.3f);
 
         //HACK: Instruction Updated After Spin Ends If Wins then it shouldn't be updated other wise it will prompt 0th index
@@ -583,36 +588,36 @@ public class SlotBehaviour : MonoBehaviour
 
         //HACK: Check For The Result And Activate Animations Accordingly
         //CheckPayoutLineBackend(SocketManager.resultData.linesToEmit, SocketManager.resultData.FinalsymbolsToEmit, SocketManager.resultData.jackpot);
-        m_AnimationController.StartAnimation();
+        m_AnimationController.StartAnimation(SocketManager.resultData.symbolsToEmit);
 
         //HACK: Kills The Tweens So That They Will Get Ready For Next Spin
         KillAllTweens();
 
         CheckPopups = true;
 
-        //if (TotalWin_text) TotalWin_text.text = SocketManager.playerdata.currentWining.ToString("f2");
+        if (TotalWin_text) TotalWin_text.text = SocketManager.playerdata.currentWining.ToString("f2");
 
-        //if (Balance_text) Balance_text.text = SocketManager.playerdata.Balance.ToString("f2");
+        if (Balance_text) Balance_text.text = SocketManager.playerdata.Balance.ToString("f2");
 
-        //currentBalance = SocketManager.playerdata.Balance;
+        currentBalance = SocketManager.playerdata.Balance;
 
-        //if (SocketManager.resultData.jackpot > 0)
-        //{
-        //    uiManager.PopulateWin(4, SocketManager.resultData.jackpot);
-        //    yield return new WaitUntil(() => !CheckPopups);
-        //    CheckPopups = true;
-        //}
+        if (SocketManager.resultData.jackpot > 0)
+        {
+            uiManager.PopulateWin(4, SocketManager.resultData.jackpot);
+            yield return new WaitUntil(() => !CheckPopups);
+            CheckPopups = true;
+        }
 
-        //if (SocketManager.resultData.isBonus)
-        //{
-        //    CheckBonusGame();
-        //}
-        //else
-        //{
-        //    CheckWinPopups();
-        //}
+        if (SocketManager.resultData.isBonus)
+        {
+            CheckBonusGame();
+        }
+        else
+        {
+            CheckWinPopups();
+        }
 
-        //yield return new WaitUntil(() => !CheckPopups);
+        yield return new WaitUntil(() => !CheckPopups);
         if (!IsAutoSpin && !IsFreeSpin)
         {
             ToggleButtonGrp(true);
@@ -623,9 +628,9 @@ public class SlotBehaviour : MonoBehaviour
             yield return new WaitForSeconds(2f);
             IsSpinning = false;
         }
-        //if(SocketManager.resultData.freeSpins.isNewAdded)
+        //if (SocketManager.resultData.freeSpins.isNewAdded)
         //{
-        //    if(IsFreeSpin)
+        //    if (IsFreeSpin)
         //    {
         //        IsFreeSpin = false;
         //        if (FreeSpinRoutine != null)
@@ -645,8 +650,8 @@ public class SlotBehaviour : MonoBehaviour
 
     private void SlotControl(int i, int j, int index, OrderingUI m_order, OrderingUI m_anim_order)
     {
-        m_AnimationController.m_AnimatedSlots[i].slotImages[j].sprite = myImages[m_DemoResponse[j, i]];
-        PopulateAnimationSprites(m_AnimationController.m_AnimatedSlots[i].slotImages[j].gameObject.GetComponent<ImageAnimation>(), m_DemoResponse[j, i]);
+        m_AnimationController.m_AnimatedSlots[i].slotImages[j].sprite = myImages[index];
+        PopulateAnimationSprites(m_AnimationController.m_AnimatedSlots[i].slotImages[j].gameObject.GetComponent<ImageAnimation>(), index);
 
         if (index >= 6 && index <= 12)
         {

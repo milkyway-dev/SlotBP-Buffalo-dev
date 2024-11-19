@@ -269,7 +269,6 @@ public class SocketIOManager : MonoBehaviour
 
     private void ParseResponse(string jsonObject)
     {
-        Debug.Log(jsonObject);
         Root myData = JsonConvert.DeserializeObject<Root>(jsonObject);
 
         string id = myData.id;
@@ -284,10 +283,10 @@ public class SocketIOManager : MonoBehaviour
                     bonusdata = myData.message.BonusData;
                     if (!SetInit)
                     {
-                        Debug.Log(jsonObject);
+                        Debug.Log(string.Concat("<color=green><b>", jsonObject, "</b></color>"));
                         //List<string> LinesString = ConvertListListIntToListString(initialData.Lines);
-                        //List<string> InitialReels = ConvertListOfListsToStrings(initialData.Reel);
-                        //InitialReels = RemoveQuotes(InitialReels);
+                        List<string> InitialReels = ConvertListOfListsToStrings(initialData.Reel);
+                        InitialReels = RemoveQuotes(InitialReels);
                         //PopulateSlotSocket(InitialReels, LinesString);
                         PopulateSlotSocket();
                         SetInit = true;
@@ -300,11 +299,13 @@ public class SocketIOManager : MonoBehaviour
                 }
             case "ResultData":
                 {
-                    Debug.Log(jsonObject);
-                    myData.message.GameData.FinalResultReel = ConvertListOfListsToStrings(myData.message.GameData.ResultReel);
-                    myData.message.GameData.FinalsymbolsToEmit = TransformAndRemoveRecurring(myData.message.GameData.symbolsToEmit);
+                    Debug.Log(string.Concat("<color=cyan><b>", jsonObject, "</b></color>"));
+                    //myData.message.GameData.FinalResultReel = ConvertListOfListsToStrings(myData.message.GameData.ResultReel);
+                    //myData.message.GameData.FinalsymbolsToEmit = TransformAndRemoveRecurring(myData.message.GameData.symbolsToEmit);
                     resultData = myData.message.GameData;
                     playerdata = myData.message.PlayerData;
+                    //if(resultData.symbolsToEmit.Count > 0)
+                    //    Debug.Log(resultData.symbolsToEmit[0][0][0]);
                     isResultdone = true;
                     break;
                 }
@@ -329,10 +330,6 @@ public class SocketIOManager : MonoBehaviour
     private void PopulateSlotSocket()//List<string> slotPop, List<string> LineIds
     {
         slotManager.shuffleInitialMatrix();
-        //for (int i = 0; i < LineIds.Count; i++)
-        //{
-        //    slotManager.FetchLines(LineIds[i], i);
-        //}
 
         slotManager.SetInitialUI();
 
@@ -473,7 +470,10 @@ public class GameData
     public List<int> autoSpin { get; set; }
     public List<List<string>> ResultReel { get; set; }
     public List<int> linesToEmit { get; set; }
-    public List<List<string>> symbolsToEmit { get; set; }
+    //public List<List<string>> symbolsToEmit { get; set; }
+    public List<List<int>> resultMatrix { get; set; }
+    public List<List<List<int>>> symbolsToEmit { get; set; }
+    public List<List<int>> WildMultipliers { get; set; }
     public double WinAmout { get; set; }
     public FreeSpins freeSpins { get; set; }
     public List<string> FinalsymbolsToEmit { get; set; }

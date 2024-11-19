@@ -10,7 +10,8 @@ public class AnimationController : MonoBehaviour
     [SerializeField]
     internal List<SlotImage> m_AnimatedSlots;
     [SerializeField]
-    private List<AnimCords> m_Cords;
+    //private List<AnimCords> m_Cords;
+    private List<List<List<int>>> m_Cords = new List<List<List<int>>>();
     [SerializeField]
     private SlotBehaviour m_SlotBehaviour;
 
@@ -18,23 +19,25 @@ public class AnimationController : MonoBehaviour
     private List<Tweener> m_SlotsAnim = new List<Tweener>();
     private bool m_PlayingAnimation = false;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartAnimation();
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            StopAnimation();
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Space))
+    //    {
+    //        StartAnimation();
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.A))
+    //    {
+    //        StopAnimation();
+    //    }
+    //}
 
-    internal void StartAnimation()
+    internal void StartAnimation(List<List<List<int>>> m_SymbolsToEmit)
     {
         m_PlayingAnimation = true;
         if(m_AnimationRoutine == null)
             m_AnimationRoutine = StartCoroutine(ActivateAllAnimation());
+
+        m_Cords = m_SymbolsToEmit;
     }
 
     internal void StopAnimation()
@@ -44,25 +47,28 @@ public class AnimationController : MonoBehaviour
         if(m_AnimationRoutine != null)
             StopCoroutine(m_AnimationRoutine);
         m_AnimationRoutine = null;
+
+        m_Cords.Clear();
+        m_Cords.TrimExcess();
     }
 
     private IEnumerator ActivateAllAnimation()
     {
         while (m_PlayingAnimation)
         {
-            foreach(var i in m_Cords)
+            foreach (var i in m_Cords)
             {
-                foreach(var k in i.m_Cords)
+                foreach (var k in i)
                 {
-                    ActivateAnimatedView(k.i, k.j);
+                    ActivateAnimatedView(k[0], k[1]);
                 }
             }
             yield return new WaitForSeconds(1f);
             foreach (var i in m_Cords)
             {
-                foreach(var k in i.m_Cords)
+                foreach (var k in i)
                 {
-                    ActivateAnimatedView(k.i, k.j);
+                    ActivateAnimatedView(k[0], k[1]);
                 }
                 yield return new WaitForSeconds(2f);
                 ResetAnimatedView();
