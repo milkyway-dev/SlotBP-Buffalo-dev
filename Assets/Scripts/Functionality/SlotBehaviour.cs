@@ -527,6 +527,8 @@ public class SlotBehaviour : MonoBehaviour
 
         m_MainUIMask.enabled = true;
 
+        m_AnimationController.StopAnimation();
+
         for (int i = 0; i < numberOfSlots; i++)
         {
             InitializeTweening(Slot_Transform[i]);
@@ -534,8 +536,6 @@ public class SlotBehaviour : MonoBehaviour
         }
 
         ResetRectSizes();
-
-        m_AnimationController.StopAnimation();
 
         if (!IsFreeSpin)
         {
@@ -628,24 +628,25 @@ public class SlotBehaviour : MonoBehaviour
             yield return new WaitForSeconds(2f);
             IsSpinning = false;
         }
-        //if (SocketManager.resultData.freeSpins.isNewAdded)
-        //{
-        //    if (IsFreeSpin)
-        //    {
-        //        IsFreeSpin = false;
-        //        if (FreeSpinRoutine != null)
-        //        {
-        //            StopCoroutine(FreeSpinRoutine);
-        //            FreeSpinRoutine = null;
-        //        }
-        //    }
-        //    uiManager.FreeSpinProcess((int)SocketManager.resultData.freeSpins.count);
-        //    if (IsAutoSpin)
-        //    {
-        //        StopAutoSpin();
-        //        yield return new WaitForSeconds(0.1f);
-        //    }
-        //}
+        Debug.Log(SocketManager.resultData.freeSpinCount);
+        if (SocketManager.resultData.isFreeSpin)
+        {
+            if (IsFreeSpin)
+            {
+                IsFreeSpin = false;
+                if (FreeSpinRoutine != null)
+                {
+                    StopCoroutine(FreeSpinRoutine);
+                    FreeSpinRoutine = null;
+                }
+            }
+            uiManager.FreeSpinProcess((int)SocketManager.resultData.freeSpinCount);
+            if (IsAutoSpin)
+            {
+                StopAutoSpin();
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
     }
 
     private void SlotControl(int i, int j, int index, OrderingUI m_order, OrderingUI m_anim_order)
@@ -693,14 +694,18 @@ public class SlotBehaviour : MonoBehaviour
                     m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(245, 245);
                     //m_UI_Order.Add();
 
-                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition -= Vector3.up * 20;
+                    //m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition -= Vector3.up * 20;
 
                     m_order.m_Priority = Priority.Wolf;
                     m_anim_order.m_Priority = Priority.Wolf;
                     break;
                 case (10):
                     Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(290, 230);//297,240
-                                                                                                //m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(290, 230);
+                    //m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(290, 230);
+
+                    Tempimages[i].slotImages[j].transform.localPosition -= Vector3.up * 16;
+                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition -= Vector3.up * 16;
+
                     m_order.m_Priority = Priority.Buffalo;
                     m_anim_order.m_Priority = Priority.Buffalo;
                     break;
@@ -715,8 +720,8 @@ public class SlotBehaviour : MonoBehaviour
                     Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(268, 210);//297,240
                     m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(268, 230);
 
-                    Tempimages[i].slotImages[j].transform.localPosition += Vector3.up * 30;
-                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition += Vector3.up * 30;
+                    Tempimages[i].slotImages[j].transform.localPosition += Vector3.up * 16;
+                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition += Vector3.up * 16;
 
                     m_order.m_Priority = Priority.Landscape;
                     m_anim_order.m_Priority = Priority.Landscape;

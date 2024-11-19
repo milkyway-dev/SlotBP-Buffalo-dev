@@ -475,7 +475,9 @@ public class GameData
     public List<List<List<int>>> symbolsToEmit { get; set; }
     public List<List<int>> WildMultipliers { get; set; }
     public double WinAmout { get; set; }
-    public FreeSpins freeSpins { get; set; }
+    //public FreeSpins freeSpins { get; set; }
+    public bool isFreeSpin { get; set; }
+    public int freeSpinCount { get; set; }
     public List<string> FinalsymbolsToEmit { get; set; }
     public List<string> FinalResultReel { get; set; }
     public double jackpot { get; set; }

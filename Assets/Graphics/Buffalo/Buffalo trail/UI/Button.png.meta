@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -134,7 +134,91 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: UISpriteSheet_Final_0
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 868
+        width: 539
+        height: 209
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a06ef5ffacfd4fa9938c5c44b705666
+      internalID: 1083511334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UISpriteSheet_Final_1
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 635
+        width: 539
+        height: 209
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6bb556e2064a04ccba666c0030b4f196
+      internalID: 1306160650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UISpriteSheet_Final_2
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 397
+        width: 539
+        height: 209
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd8af4ebb9b8c4100a5ba8ba7f4c219d
+      internalID: -310393576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UISpriteSheet_Final_3
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 157
+        width: 539
+        height: 209
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01f30a16e2c164b52a629f0abf1ad3fa
+      internalID: -164908401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -145,7 +229,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      UISpriteSheet_Final_0: 1083511334
+      UISpriteSheet_Final_1: 1306160650
+      UISpriteSheet_Final_2: -310393576
+      UISpriteSheet_Final_3: -164908401
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
