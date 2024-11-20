@@ -574,7 +574,24 @@ public class SlotBehaviour : MonoBehaviour
 
         m_MainUIMask.enabled = false;
 
-        yield return new WaitForSeconds(0.3f);
+        if (SocketManager.resultData.WildMultipliers.Count > 0)
+        {
+            List<List<int>> m_multiplier = SocketManager.resultData.WildMultipliers;
+            foreach(var i in m_multiplier)
+            {
+                Tempimages[i[1]].slotImages[i[0]].transform.GetChild(0).gameObject.SetActive(true);
+                m_AnimationController.m_AnimatedSlots[i[1]].slotImages[i[0]].transform.GetChild(0).gameObject.SetActive(true);
+                Tempimages[i[1]].slotImages[i[0]].transform.GetChild(0).GetComponent<TMP_Text>().text = (i[2]).ToString();
+                m_AnimationController.m_AnimatedSlots[i[1]].slotImages[i[0]].transform.GetChild(0).GetComponent<TMP_Text>().text = (i[2]).ToString();
+
+                DOTweenUIManager.Instance.Jump(Tempimages[i[1]].slotImages[i[0]].transform.GetChild(0).GetComponent<RectTransform>(), 50f, 2, 2f);
+                DOTweenUIManager.Instance.Jump(m_AnimationController.m_AnimatedSlots[i[1]].slotImages[i[0]].transform.GetChild(0).GetComponent<RectTransform>(), 50f, 2, 2f);
+            }
+
+            yield return new WaitForSeconds(3f);
+        }
+
+        yield return new WaitForSeconds(0.5f);
 
         //HACK: Instruction Updated After Spin Ends If Wins then it shouldn't be updated other wise it will prompt 0th index
         TotalWin_text.text = m_Instructions[0];
@@ -594,12 +611,12 @@ public class SlotBehaviour : MonoBehaviour
 
         currentBalance = SocketManager.playerdata.Balance;
 
-        if (SocketManager.resultData.jackpot > 0)
-        {
-            uiManager.PopulateWin(4, SocketManager.resultData.jackpot);
-            yield return new WaitUntil(() => !CheckPopups);
-            CheckPopups = true;
-        }
+        //if (SocketManager.resultData.jackpot > 0)
+        //{
+        //    uiManager.PopulateWin(4, SocketManager.resultData.jackpot);
+        //    yield return new WaitUntil(() => !CheckPopups);
+        //    CheckPopups = true;
+        //}
 
         if (SocketManager.resultData.isBonus)
         {
@@ -922,6 +939,8 @@ public class SlotBehaviour : MonoBehaviour
             {
                 Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(242, 185);
                 m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(242, 185);
+                Tempimages[i].slotImages[j].transform.GetChild(0).gameObject.SetActive(false);
+                m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.GetChild(0).gameObject.SetActive(false);
             }
         }
 
