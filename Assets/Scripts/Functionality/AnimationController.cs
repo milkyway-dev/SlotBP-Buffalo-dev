@@ -8,7 +8,7 @@ public class AnimationController : MonoBehaviour
     [SerializeField]
     private Transform m_ParentSlotsHolder;
     [SerializeField]
-    internal List<SlotImage> m_AnimatedSlots;
+    internal List<SlotImage> m_AnimatedSlots = new List<SlotImage>();
     [SerializeField]
     //private List<AnimCords> m_Cords;
     private List<List<List<int>>> m_Cords = new List<List<List<int>>>();
@@ -63,14 +63,15 @@ public class AnimationController : MonoBehaviour
                     ActivateAnimatedView(k[0], k[1]);
                 }
             }
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
+            ResetAnimatedView();
             foreach (var i in m_Cords)
             {
                 foreach (var k in i)
                 {
                     ActivateAnimatedView(k[0], k[1]);
                 }
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(1f);
                 ResetAnimatedView();
             }
             yield return new WaitForSeconds(1f);
@@ -78,7 +79,7 @@ public class AnimationController : MonoBehaviour
         }
     }
 
-    private void ActivateAnimatedView(int i, int j)
+    private void ActivateAnimatedView(int j, int i)
     {
         if (!m_ParentSlotsHolder.gameObject.activeSelf)
         {

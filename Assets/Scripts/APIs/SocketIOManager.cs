@@ -304,8 +304,7 @@ public class SocketIOManager : MonoBehaviour
                     //myData.message.GameData.FinalsymbolsToEmit = TransformAndRemoveRecurring(myData.message.GameData.symbolsToEmit);
                     resultData = myData.message.GameData;
                     playerdata = myData.message.PlayerData;
-                    //if(resultData.symbolsToEmit.Count > 0)
-                    //    Debug.Log(resultData.symbolsToEmit[0][0][0]);
+                    resultData.WinAmout = playerdata.currentWining;
                     isResultdone = true;
                     break;
                 }

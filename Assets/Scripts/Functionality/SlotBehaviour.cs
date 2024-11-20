@@ -385,7 +385,7 @@ public class SlotBehaviour : MonoBehaviour
         {
             for (int j = 0; j < 4; j++)
             {
-                int randomIndex = UnityEngine.Random.Range(0, myImages.Length);
+                int randomIndex = UnityEngine.Random.Range(0, myImages.Length - 7);
                 Tempimages[i].slotImages[j].sprite = myImages[randomIndex];
                 SlotControl(i, j, randomIndex, m_order, m_anim_order);
             }
@@ -456,25 +456,18 @@ public class SlotBehaviour : MonoBehaviour
                 animScript.AnimationSpeed = 50f;
                 break;
             case 11:
-                for (int i = 0; i < Gold_Buffalo.Length; i++)
-                {
-                    animScript.textureArray.Add(Gold_Buffalo[i]);
-                }
-                animScript.AnimationSpeed = 20f;
-                break;
-            case 12:
                 for (int i = 0; i < Landscape_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(Landscape_Sprite[i]);
                 }
                 animScript.AnimationSpeed = 50f;
                 break;
-            case 13:
-                for (int i = 0; i < Bonus_Sprite.Length; i++)
+            case 12:
+                for (int i = 0; i < Gold_Buffalo.Length; i++)
                 {
-                    animScript.textureArray.Add(Bonus_Sprite[i]);
+                    animScript.textureArray.Add(Gold_Buffalo[i]);
                 }
-                animScript.AnimationSpeed = 30f;
+                animScript.AnimationSpeed = 20f;
                 break;
         }
     }
@@ -570,9 +563,9 @@ public class SlotBehaviour : MonoBehaviour
             }
         }
 
-        PrioritizeList();
-
         yield return new WaitForSeconds(0.5f);
+
+        PrioritizeList();
 
         for (int i = 0; i < numberOfSlots; i++)
         {
@@ -587,8 +580,8 @@ public class SlotBehaviour : MonoBehaviour
         TotalWin_text.text = m_Instructions[0];
 
         //HACK: Check For The Result And Activate Animations Accordingly
-        //CheckPayoutLineBackend(SocketManager.resultData.linesToEmit, SocketManager.resultData.FinalsymbolsToEmit, SocketManager.resultData.jackpot);
         m_AnimationController.StartAnimation(SocketManager.resultData.symbolsToEmit);
+        //CheckPayoutLineBackend(SocketManager.resultData.linesToEmit, SocketManager.resultData.FinalsymbolsToEmit, SocketManager.resultData.jackpot);
 
         //HACK: Kills The Tweens So That They Will Get Ready For Next Spin
         KillAllTweens();
@@ -628,7 +621,6 @@ public class SlotBehaviour : MonoBehaviour
             yield return new WaitForSeconds(2f);
             IsSpinning = false;
         }
-        Debug.Log(SocketManager.resultData.freeSpinCount);
         if (SocketManager.resultData.isFreeSpin)
         {
             if (IsFreeSpin)
@@ -653,6 +645,9 @@ public class SlotBehaviour : MonoBehaviour
     {
         m_AnimationController.m_AnimatedSlots[i].slotImages[j].sprite = myImages[index];
         PopulateAnimationSprites(m_AnimationController.m_AnimatedSlots[i].slotImages[j].gameObject.GetComponent<ImageAnimation>(), index);
+
+        Vector3 temp_Position;
+        Vector3 temp_Anim_Position;
 
         if (index >= 6 && index <= 12)
         {
@@ -703,28 +698,41 @@ public class SlotBehaviour : MonoBehaviour
                     Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(290, 230);//297,240
                     //m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(290, 230);
 
-                    Tempimages[i].slotImages[j].transform.localPosition -= Vector3.up * 16;
-                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition -= Vector3.up * 16;
+                    //Tempimages[i].slotImages[j].transform.localPosition -= Vector3.up * 28;
+                    //m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition -= Vector3.up * 16;
+
+                    temp_Position = Tempimages[i].slotImages[j].transform.localPosition;
+                    temp_Anim_Position = m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition;
+                    temp_Position.y -= 15;
+                    temp_Anim_Position.y -= 15;
+                    Tempimages[i].slotImages[j].transform.localPosition = temp_Position;
+                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition = temp_Anim_Position;
 
                     m_order.m_Priority = Priority.Buffalo;
                     m_anim_order.m_Priority = Priority.Buffalo;
                     break;
                 case (11):
-                    Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(280, 220);//297,240
-                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(300, 300);
-                    m_order.m_Priority = Priority.Gold_Buffalo;
-                    m_anim_order.m_Priority = Priority.Gold_Buffalo;
-                    //Tempimages[i].slotImages[j].transform.SetAsLastSibling();
-                    break;
-                case (12):
-                    Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(268, 210);//297,240
-                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(268, 230);
+                    Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(270, 230);//297,240 268, 210
+                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(270, 230);
 
-                    Tempimages[i].slotImages[j].transform.localPosition += Vector3.up * 16;
-                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition += Vector3.up * 16;
+                    //Tempimages[i].slotImages[j].transform.localPosition += Vector3.up * 28;
+                    //m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition += Vector3.up * 28;
+                    temp_Position = Tempimages[i].slotImages[j].transform.localPosition;
+                    temp_Anim_Position = m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition;
+                    temp_Position.y += 18;
+                    temp_Anim_Position.y += 18;
+                    Tempimages[i].slotImages[j].transform.localPosition = temp_Position;
+                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].transform.localPosition = temp_Anim_Position;
 
                     m_order.m_Priority = Priority.Landscape;
                     m_anim_order.m_Priority = Priority.Landscape;
+                    break;
+                case (12):
+                    Tempimages[i].slotImages[j].rectTransform.sizeDelta = new Vector2(320, 320);//297,240 280, 220
+                    m_AnimationController.m_AnimatedSlots[i].slotImages[j].rectTransform.sizeDelta = new Vector2(320, 320);
+                    m_order.m_Priority = Priority.Gold_Buffalo;
+                    m_anim_order.m_Priority = Priority.Gold_Buffalo;
+                    //Tempimages[i].slotImages[j].transform.SetAsLastSibling();
                     break;
                 default:
                     break;
@@ -770,18 +778,18 @@ public class SlotBehaviour : MonoBehaviour
 
     internal void CheckWinPopups()
     {
-        if (SocketManager.resultData.WinAmout >= currentTotalBet * 10 && SocketManager.resultData.WinAmout < currentTotalBet * 15)
+        if (SocketManager.resultData.WinAmout >= currentTotalBet * 5)
         {
             uiManager.PopulateWin(1, SocketManager.resultData.WinAmout);
         }
-        else if (SocketManager.resultData.WinAmout >= currentTotalBet * 15 && SocketManager.resultData.WinAmout < currentTotalBet * 20)
+        else if (SocketManager.resultData.WinAmout >= currentTotalBet * 10)
         {
             uiManager.PopulateWin(2, SocketManager.resultData.WinAmout);
         }
-        else if (SocketManager.resultData.WinAmout >= currentTotalBet * 20)
-        {
-            uiManager.PopulateWin(3, SocketManager.resultData.WinAmout);
-        }
+        //else if (SocketManager.resultData.WinAmout >= currentTotalBet * 20)
+        //{
+        //    uiManager.PopulateWin(3, SocketManager.resultData.WinAmout);
+        //}
         else
         {
             CheckPopups = false;

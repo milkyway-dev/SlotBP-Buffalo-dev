@@ -126,6 +126,14 @@ public class UIManager : MonoBehaviour
     private GameObject WinPopup_Object;
     [SerializeField]
     private TMP_Text Win_Text;
+    [SerializeField]
+    private Sprite[] m_BigWin;
+    [SerializeField]
+    private Sprite[] m_MegaWin;
+    [SerializeField]
+    private ImageAnimation m_WinImage;
+    [SerializeField]
+    private ImageAnimation m_WinAnimation;
 
     [Header("FreeSpins Popup")]
     [SerializeField]
@@ -180,6 +188,7 @@ public class UIManager : MonoBehaviour
     private Button NoQuit_Button;
     [SerializeField]
     private Button CrossQuit_Button;
+
 
     [SerializeField]
     private AudioController audioController;
@@ -428,13 +437,23 @@ public class UIManager : MonoBehaviour
 
     internal void PopulateWin(int value, double amount)
     {
+        m_WinAnimation.StartAnimation();
+        m_WinImage.textureArray.Clear();
+        m_WinImage.textureArray.TrimExcess();
+
         switch(value)
         {
             case 1:
-                if (Win_Image) Win_Image.sprite = BigWin_Sprite;
+                foreach(var i in m_BigWin)
+                {
+                    m_WinImage.textureArray.Add(i);
+                }
                 break;
             case 2:
-                if (Win_Image) Win_Image.sprite = HugeWin_Sprite;
+                foreach(var i in m_MegaWin)
+                {
+                    m_WinImage.textureArray.Add(i);
+                }
                 break;
             case 3:
                 if (Win_Image) Win_Image.sprite = MegaWin_Sprite;
@@ -444,6 +463,8 @@ public class UIManager : MonoBehaviour
                 break;
         }
 
+        m_WinImage.gameObject.SetActive(true);
+        m_WinImage.StartAnimation();
         StartPopupAnim(amount);
     }
 
@@ -519,7 +540,7 @@ public class UIManager : MonoBehaviour
             }
             if(paylines.symbols[i].Multiplier[3][0] != 0)
             {
-                text += "<color=yellow>\n4x - </color>" + paylines.symbols[i].Multiplier[3][0];
+                text += "<color=yellow>\n2x - </color>" + paylines.symbols[i].Multiplier[3][0];
             }
             if (SymbolsText[i]) SymbolsText[i].text = text;
         }
