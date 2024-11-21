@@ -22,6 +22,8 @@ public class SlotBehaviour : MonoBehaviour
     private AnimationController m_AnimationController;
     [SerializeField]
     private Image m_MainUIMask;
+    [SerializeField]
+    private GameObject m_BuffaloRush;
 
     [Header("Slots Elements")]
     [SerializeField]
@@ -595,8 +597,6 @@ public class SlotBehaviour : MonoBehaviour
             CheckWinPopups();
         }
 
-        yield return new WaitForSeconds(1f);
-
         yield return new WaitUntil(() => !CheckPopups);
         if (!IsAutoSpin && !IsFreeSpin)
         {
@@ -620,6 +620,10 @@ public class SlotBehaviour : MonoBehaviour
                     FreeSpinRoutine = null;
                 }
             }
+            else
+            {
+                yield return StartCoroutine(BuffaloRushRoutine());
+            }
             uiManager.FreeSpinProcess((int)SocketManager.resultData.freeSpinCount);
             if (IsAutoSpin)
             {
@@ -627,6 +631,17 @@ public class SlotBehaviour : MonoBehaviour
                 yield return new WaitForSeconds(0.1f);
             }
         }
+    }
+
+    private IEnumerator BuffaloRushRoutine()
+    {
+        m_BuffaloRush.SetActive(true);
+        m_BuffaloRush.GetComponent<ImageAnimation>().StartAnimation();
+        yield return new WaitForSeconds(2.2f);
+        m_BuffaloRush.GetComponent<ImageAnimation>().StopAnimation();
+        m_BuffaloRush.SetActive(false);
+        yield return new WaitForSeconds(0.2f);
+        StopCoroutine(BuffaloRushRoutine());
     }
 
     private void SlotControl(int i, int j, int index, OrderingUI m_order, OrderingUI m_anim_order)

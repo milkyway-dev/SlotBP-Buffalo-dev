@@ -22,14 +22,15 @@ public class AudioController : MonoBehaviour
 
     internal void CheckFocusFunction(bool focus)
     {
-        if (!focus)
-        {
-            m_MainAudioListener.enabled = focus;
-        }
-        else
-        {
-            m_MainAudioListener.enabled = focus;
-        }
+        m_MainAudioListener.enabled = focus;
+        //if (!focus)
+        //{
+        //    m_MainAudioListener.enabled = focus;
+        //}
+        //else
+        //{
+        //    m_MainAudioListener.enabled = focus;
+        //}
     }
 
     internal void PlayNormalButton()
@@ -78,7 +79,7 @@ public class AudioController : MonoBehaviour
         }
     }
 
-    internal void MuteUnmute(Sound sound, bool toggle)
+    internal void MuteUnmute(Sound sound, bool toggle, bool config)
     {
         switch (sound)
         {

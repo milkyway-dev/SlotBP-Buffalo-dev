@@ -654,13 +654,13 @@ public class UIManager : MonoBehaviour
         {
             if (MusicOn_Object) MusicOn_Object.SetActive(true);
             if (MusicOff_Object) MusicOff_Object.SetActive(false);
-            audioController.MuteUnmute(Sound.Music, false);
+            audioController.MuteUnmute(Sound.Music, false, true);
         }
         else
         {
             if (MusicOn_Object) MusicOn_Object.SetActive(false);
             if (MusicOff_Object) MusicOff_Object.SetActive(true);
-            audioController.MuteUnmute(Sound.Music, true);
+            audioController.MuteUnmute(Sound.Music, true, true);
         }
     }
 
@@ -676,13 +676,13 @@ public class UIManager : MonoBehaviour
         {
             if (SoundOn_Object) SoundOn_Object.SetActive(true);
             if (SoundOff_Object) SoundOff_Object.SetActive(false);
-            if (audioController) audioController.MuteUnmute(Sound.Sound, false);
+            if (audioController) audioController.MuteUnmute(Sound.Sound, false, true);
         }
         else
         {
             if (SoundOn_Object) SoundOn_Object.SetActive(false);
             if (SoundOff_Object) SoundOff_Object.SetActive(true);
-            if(audioController) audioController.MuteUnmute(Sound.Sound, true);
+            if(audioController) audioController.MuteUnmute(Sound.Sound, true, true);
         }
     }
 

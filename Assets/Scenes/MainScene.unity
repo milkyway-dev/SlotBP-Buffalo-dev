@@ -15615,7 +15615,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5fbe0ffae96094c11bc85fc9511236b3, type: 3}
   rendererDelegate: {fileID: 683441688}
   useSharedMaterial: 1
-  doLoopAnimation: 0
+  doLoopAnimation: 1
   currentAnimationState: 0
   AnimationSpeed: 40
   delayBetweenLoop: 0
@@ -47657,6 +47657,7 @@ MonoBehaviour:
     - {fileID: 887265468}
   m_AnimationController: {fileID: 757520300}
   m_MainUIMask: {fileID: 1574897786}
+  m_BuffaloRush: {fileID: 683441685}
   Slot_Elements:
   - {fileID: 0}
   - {fileID: 0}
