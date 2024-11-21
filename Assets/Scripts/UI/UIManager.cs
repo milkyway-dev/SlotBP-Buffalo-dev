@@ -343,8 +343,6 @@ public class UIManager : MonoBehaviour
         if (QuitSplash_button) QuitSplash_button.onClick.RemoveAllListeners();
         if (QuitSplash_button) QuitSplash_button.onClick.AddListener(delegate { OpenPopup(QuitPopup_Object); });
 
-        if (audioController) audioController.ToggleMute(false);
-
         isMusic = true;
         isSound = true;
 
@@ -455,12 +453,12 @@ public class UIManager : MonoBehaviour
                     m_WinImage.textureArray.Add(i);
                 }
                 break;
-            case 3:
-                if (Win_Image) Win_Image.sprite = MegaWin_Sprite;
-                break;
-            case 4:
-                if (Win_Image) Win_Image.sprite = Jackpot_Sprite;
-                break;
+            //case 3:
+            //    if (Win_Image) Win_Image.sprite = MegaWin_Sprite;
+            //    break;
+            //case 4:
+            //    if (Win_Image) Win_Image.sprite = Jackpot_Sprite;
+            //    break;
         }
 
         m_WinImage.gameObject.SetActive(true);
@@ -573,13 +571,13 @@ public class UIManager : MonoBehaviour
     private void CallOnExitFunction()
     {
         isExit = true;
-        audioController.PlayButtonAudio();
+        audioController.PlayNormalButton();
         slotManager.CallCloseSocket();
     }
 
     private void OpenMenu()
     {
-        audioController.PlayButtonAudio();
+        audioController.PlayNormalButton();
         if (Menu_Object) Menu_Object.SetActive(false);
         if (Exit_Object) Exit_Object.SetActive(true);
         if (Info_RT.gameObject) Info_RT.gameObject.SetActive(true);
@@ -605,7 +603,7 @@ public class UIManager : MonoBehaviour
     private void CloseMenu()
     {
 
-        if (audioController) audioController.PlayButtonAudio();
+        if (audioController) audioController.PlayNormalButton();
 
         DOTween.To(() => Info_RT.anchoredPosition, (val) => Info_RT.anchoredPosition = val, new Vector2(Info_RT.anchoredPosition.x, Info_RT.anchoredPosition.y - 375), 0.1f).OnUpdate(() =>
         {
@@ -634,14 +632,14 @@ public class UIManager : MonoBehaviour
 
     private void OpenPopup(GameObject Popup)
     {
-        if (audioController) audioController.PlayButtonAudio();
+        if (audioController) audioController.PlayNormalButton();
         if (Popup) Popup.SetActive(true);
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
     }
 
     private void ClosePopup(GameObject Popup)
     {
-        if (audioController) audioController.PlayButtonAudio();
+        if (audioController) audioController.PlayNormalButton();
         if (Popup) Popup.SetActive(false);
         if (!DisconnectPopup_Object.activeSelf) 
         {
@@ -656,13 +654,13 @@ public class UIManager : MonoBehaviour
         {
             if (MusicOn_Object) MusicOn_Object.SetActive(true);
             if (MusicOff_Object) MusicOff_Object.SetActive(false);
-            audioController.ToggleMute(false, "bg");
+            audioController.MuteUnmute(Sound.Music, false);
         }
         else
         {
             if (MusicOn_Object) MusicOn_Object.SetActive(false);
             if (MusicOff_Object) MusicOff_Object.SetActive(true);
-            audioController.ToggleMute(true, "bg");
+            audioController.MuteUnmute(Sound.Music, true);
         }
     }
 
@@ -678,15 +676,13 @@ public class UIManager : MonoBehaviour
         {
             if (SoundOn_Object) SoundOn_Object.SetActive(true);
             if (SoundOff_Object) SoundOff_Object.SetActive(false);
-            if (audioController) audioController.ToggleMute(false,"button");
-            if (audioController) audioController.ToggleMute(false,"wl");
+            if (audioController) audioController.MuteUnmute(Sound.Sound, false);
         }
         else
         {
             if (SoundOn_Object) SoundOn_Object.SetActive(false);
             if (SoundOff_Object) SoundOff_Object.SetActive(true);
-            if(audioController) audioController.ToggleMute(true,"button");
-            if (audioController) audioController.ToggleMute(true,"wl");
+            if(audioController) audioController.MuteUnmute(Sound.Sound, true);
         }
     }
 
