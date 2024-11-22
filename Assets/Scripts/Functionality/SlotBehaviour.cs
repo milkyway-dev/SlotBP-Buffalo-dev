@@ -609,6 +609,11 @@ public class SlotBehaviour : MonoBehaviour
             IsSpinning = false;
         }
 
+        //if(SocketManager.resultData.fsWinningSymbols.Count > 0)
+        //    FreeSpinCoinAnimate();
+
+        yield return new WaitForSeconds(1f);
+
         if (SocketManager.resultData.isFreeSpin)
         {
             if (IsFreeSpin)
@@ -624,7 +629,7 @@ public class SlotBehaviour : MonoBehaviour
             {
                 yield return StartCoroutine(BuffaloRushRoutine());
             }
-            uiManager.FreeSpinProcess((int)SocketManager.resultData.freeSpinCount);
+            uiManager.FreeSpinProcess((int)SocketManager.resultData.freeSpinCount, (int)SocketManager.resultData.isNewAdded);
             if (IsAutoSpin)
             {
                 StopAutoSpin();
@@ -633,9 +638,20 @@ public class SlotBehaviour : MonoBehaviour
         }
     }
 
+    //private void FreeSpinCoinAnimate()
+    //{
+    //    for(int i = 0; i < SocketManager.resultData.fsWinningSymbols.Count; i++)
+    //    {
+            
+    //        m_AnimationController.m_AnimatedSlots[SocketManager.resultData.fsWinningSymbols[i][1]].slotImages[SocketManager.resultData.fsWinningSymbols[i][0]].GetComponent<ImageAnimation>().StartAnimation();
+
+    //    }
+    //}
+
     private IEnumerator BuffaloRushRoutine()
     {
         m_BuffaloRush.SetActive(true);
+        audioController.PlayBull_Audio();
         m_BuffaloRush.GetComponent<ImageAnimation>().StartAnimation();
         yield return new WaitForSeconds(2.2f);
         m_BuffaloRush.GetComponent<ImageAnimation>().StopAnimation();
