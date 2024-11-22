@@ -11,10 +11,14 @@ public class AudioController : MonoBehaviour
     [SerializeField] private AudioSource m_Spinning_Audio;
     [SerializeField] private AudioSource m_BG_Music;
     [SerializeField] private AudioSource m_FreeSpinEnc_Sound;
+    [SerializeField] private AudioSource m_NormalWin_Sound;
     [SerializeField] private AudioSource m_BigWin_Sound;
     [SerializeField] private AudioSource m_MegaWin_Sound;
     [SerializeField] private AudioSource m_GoldCount_Audio;
     [SerializeField] private AudioSource m_Bull_Audio;
+
+    [SerializeField] private bool m_MutedMusic = false;
+    [SerializeField] private bool m_MutedSound = false;
 
     private void Start()
     {
@@ -23,15 +27,17 @@ public class AudioController : MonoBehaviour
 
     internal void CheckFocusFunction(bool focus)
     {
-        m_MainAudioListener.enabled = focus;
-        //if (!focus)
-        //{
-        //    m_MainAudioListener.enabled = focus;
-        //}
-        //else
-        //{
-        //    m_MainAudioListener.enabled = focus;
-        //}
+        //m_MainAudioListener.enabled = focus;
+        if (!focus)
+        {
+            //m_MainAudioListener.enabled = focus;
+            MuteUnmute(Sound.All, true, false);
+        }
+        else
+        {
+            //m_MainAudioListener.enabled = focus;
+            MuteUnmute(Sound.All, false, false);
+        }
     }
 
     internal void PlayNormalButton()
@@ -76,6 +82,9 @@ public class AudioController : MonoBehaviour
     {
         switch (win)
         {
+            case Sound.NormalWin:
+                if (m_MainAudioListener.enabled) m_NormalWin_Sound.Play();
+                break;
             case Sound.BigWin:
                 if (m_MainAudioListener.enabled) m_BigWin_Sound.Play();
                 break;
@@ -91,27 +100,54 @@ public class AudioController : MonoBehaviour
         {
             case Sound.Music:
                 m_BG_Music.mute = toggle;
+                m_MutedMusic = toggle;
                 break;
             case Sound.Sound:
                 m_NormalButton_Audio.mute = toggle;
                 m_SpinButton_Audio.mute = toggle;
                 m_Spinning_Audio.mute = toggle;
                 m_GoldCount_Audio.mute = toggle;
+                m_NormalWin_Sound.mute = toggle;
                 m_BigWin_Sound.mute = toggle;
                 m_MegaWin_Sound.mute = toggle;
                 m_FreeSpinEnc_Sound.mute = toggle;
                 m_Bull_Audio.mute = toggle;
+                m_MutedSound = toggle;
                 break;
             case Sound.All:
-                m_NormalButton_Audio.mute = toggle;
-                m_SpinButton_Audio.mute = toggle;
-                m_Spinning_Audio.mute = toggle;
-                m_GoldCount_Audio.mute = toggle;
-                m_BigWin_Sound.mute = toggle;
-                m_MegaWin_Sound.mute = toggle;
-                m_FreeSpinEnc_Sound.mute = toggle;
-                m_BG_Music.mute = toggle;
-                m_Bull_Audio.mute = toggle;
+                Debug.Log("Toggle Is: " + toggle + " " + " Config Is: " + config);
+                if (config || (!config && toggle))
+                {
+                    m_NormalButton_Audio.mute = toggle;
+                    m_SpinButton_Audio.mute = toggle;
+                    m_Spinning_Audio.mute = toggle;
+                    m_GoldCount_Audio.mute = toggle;
+                    m_NormalWin_Sound.mute = toggle;
+                    m_BigWin_Sound.mute = toggle;
+                    m_MegaWin_Sound.mute = toggle;
+                    m_FreeSpinEnc_Sound.mute = toggle;
+                    m_BG_Music.mute = toggle;
+                    m_Bull_Audio.mute = toggle;
+                }
+                else
+                {
+                    if (!m_MutedMusic)
+                    {
+                        m_BG_Music.mute = toggle;
+                    }
+                    if (!m_MutedSound)
+                    {
+                        m_NormalButton_Audio.mute = toggle;
+                        m_SpinButton_Audio.mute = toggle;
+                        m_Spinning_Audio.mute = toggle;
+                        m_GoldCount_Audio.mute = toggle;
+                        m_NormalWin_Sound.mute = toggle;
+                        m_BigWin_Sound.mute = toggle;
+                        m_MegaWin_Sound.mute = toggle;
+                        m_FreeSpinEnc_Sound.mute = toggle;
+                        m_Bull_Audio.mute = toggle;
+                    }
+                }
                 break;
         }
     }
@@ -119,6 +155,7 @@ public class AudioController : MonoBehaviour
 
 public enum Sound
 {
+    NormalWin,
     BigWin,
     MegaWin,
     //Mute or Unmute Ids
