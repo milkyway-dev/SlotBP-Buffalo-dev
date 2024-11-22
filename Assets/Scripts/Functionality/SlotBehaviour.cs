@@ -241,6 +241,7 @@ public class SlotBehaviour : MonoBehaviour
             AutoSpinRoutine = null;
             StopCoroutine(StopAutoSpinCoroutine());
         }
+        //IsAutoSpin = false;
     }
     #endregion
 
