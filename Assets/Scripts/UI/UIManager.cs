@@ -438,31 +438,35 @@ public class UIManager : MonoBehaviour
         m_WinAnimation.StartAnimation();
         m_WinImage.textureArray.Clear();
         m_WinImage.textureArray.TrimExcess();
+        m_WinImage.gameObject.SetActive(false);
+        bool winToActive = false;
 
         switch(value)
         {
             case 1:
+                winToActive = true;
                 foreach(var i in m_BigWin)
                 {
                     m_WinImage.textureArray.Add(i);
                 }
                 break;
             case 2:
+                winToActive = true;
                 foreach(var i in m_MegaWin)
                 {
                     m_WinImage.textureArray.Add(i);
                 }
                 break;
-            //case 3:
-            //    if (Win_Image) Win_Image.sprite = MegaWin_Sprite;
-            //    break;
-            //case 4:
-            //    if (Win_Image) Win_Image.sprite = Jackpot_Sprite;
-            //    break;
+            case 3:
+                winToActive = false;
+                break;
         }
 
-        m_WinImage.gameObject.SetActive(true);
-        m_WinImage.StartAnimation();
+        if (winToActive)
+        {
+            m_WinImage.gameObject.SetActive(true);
+            m_WinImage.StartAnimation();
+        }
         StartPopupAnim(amount);
     }
 
@@ -483,11 +487,11 @@ public class UIManager : MonoBehaviour
 
     private void StartPopupAnim(double amount)
     {
-        int initAmount = 0;
+        double initAmount = 0.00;
         if (WinPopup_Object) WinPopup_Object.SetActive(true);
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
 
-        DOTween.To(() => initAmount, (val) => initAmount = val, (int)amount, 5f).OnUpdate(() =>
+        DOTween.To(() => initAmount, (val) => initAmount = val, (double)amount, 5f).OnUpdate(() =>
         {
             if (Win_Text) Win_Text.text = initAmount.ToString();
         });

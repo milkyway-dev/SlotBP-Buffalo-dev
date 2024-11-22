@@ -189,14 +189,6 @@ public class SlotBehaviour : MonoBehaviour
         tweenHeight = (myImages.Length * IconSizeFactor) - 280;
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            ResetRectSizes();
-        }
-    }
-
     #region Autospin
     private void AutoSpin()
     {
@@ -542,8 +534,17 @@ public class SlotBehaviour : MonoBehaviour
 
         m_MainUIMask.enabled = false;
 
+        yield return new WaitForSeconds(0.5f);
+
+        //HACK: Instruction Updated After Spin Ends If Wins then it shouldn't be updated other wise it will prompt 0th index
+        TotalWin_text.text = m_Instructions[0];
+
+        //HACK: Check For The Result And Activate Animations Accordingly
+        m_AnimationController.StartAnimation(SocketManager.resultData.symbolsToEmit);
+
         if (SocketManager.resultData.WildMultipliers.Count > 0)
         {
+            //m_AnimationController.FreeSpinCoinAnimate();
             List<List<int>> m_multiplier = SocketManager.resultData.WildMultipliers;
             foreach(var i in m_multiplier)
             {
@@ -558,17 +559,8 @@ public class SlotBehaviour : MonoBehaviour
                 DOTweenUIManager.Instance.Jump(m_AnimationController.m_AnimatedSlots[i[1]].slotImages[i[0]].transform.GetChild(0).GetComponent<RectTransform>(), 50f, 2, 0.6f);
             }
 
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(1.4f);
         }
-
-        yield return new WaitForSeconds(0.5f);
-
-        //HACK: Instruction Updated After Spin Ends If Wins then it shouldn't be updated other wise it will prompt 0th index
-        TotalWin_text.text = m_Instructions[0];
-
-        //HACK: Check For The Result And Activate Animations Accordingly
-        m_AnimationController.StartAnimation(SocketManager.resultData.symbolsToEmit);
-        //CheckPayoutLineBackend(SocketManager.resultData.linesToEmit, SocketManager.resultData.FinalsymbolsToEmit, SocketManager.resultData.jackpot);
 
         //HACK: Kills The Tweens So That They Will Get Ready For Next Spin
         KillAllTweens();
@@ -598,21 +590,21 @@ public class SlotBehaviour : MonoBehaviour
         }
 
         yield return new WaitUntil(() => !CheckPopups);
-        if (!IsAutoSpin && !IsFreeSpin)
+        if (!IsAutoSpin && !IsFreeSpin && !SocketManager.resultData.isFreeSpin)
         {
             ToggleButtonGrp(true);
             IsSpinning = false;
         }
         else
         {
-            yield return new WaitForSeconds(2f);
+            //yield return new WaitForSeconds(2f);
             IsSpinning = false;
         }
 
         //if(SocketManager.resultData.fsWinningSymbols.Count > 0)
         //    FreeSpinCoinAnimate();
 
-        yield return new WaitForSeconds(1f);
+        //yield return new WaitForSeconds(1f);
 
         if (SocketManager.resultData.isFreeSpin)
         {
@@ -637,16 +629,6 @@ public class SlotBehaviour : MonoBehaviour
             }
         }
     }
-
-    //private void FreeSpinCoinAnimate()
-    //{
-    //    for(int i = 0; i < SocketManager.resultData.fsWinningSymbols.Count; i++)
-    //    {
-            
-    //        m_AnimationController.m_AnimatedSlots[SocketManager.resultData.fsWinningSymbols[i][1]].slotImages[SocketManager.resultData.fsWinningSymbols[i][0]].GetComponent<ImageAnimation>().StartAnimation();
-
-    //    }
-    //}
 
     private IEnumerator BuffaloRushRoutine()
     {
@@ -807,10 +789,11 @@ public class SlotBehaviour : MonoBehaviour
             audioController.PlayWin(Sound.MegaWin);
             uiManager.PopulateWin(2, SocketManager.resultData.WinAmout);
         }
-        //else if (SocketManager.resultData.WinAmout >= currentTotalBet * 20)
-        //{
-        //    uiManager.PopulateWin(3, SocketManager.resultData.WinAmout);
-        //}
+        else if (SocketManager.resultData.WinAmout > 0)
+        {
+            audioController.PlayWin(Sound.NormalWin);
+            uiManager.PopulateWin(3, SocketManager.resultData.WinAmout);
+        }
         else
         {
             CheckPopups = false;
