@@ -14,22 +14,12 @@ public class AnimationController : MonoBehaviour
     private List<List<List<int>>> m_Cords = new List<List<List<int>>>();
     [SerializeField]
     private SlotBehaviour m_SlotBehaviour;
+    [SerializeField]
+    private SocketIOManager SocketManager;
 
     private Coroutine m_AnimationRoutine;
     private List<Tweener> m_SlotsAnim = new List<Tweener>();
     private bool m_PlayingAnimation = false;
-
-    //private void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Space))
-    //    {
-    //        StartAnimation();
-    //    }
-    //    if (Input.GetKeyDown(KeyCode.A))
-    //    {
-    //        StopAnimation();
-    //    }
-    //}
 
     internal void StartAnimation(List<List<List<int>>> m_SymbolsToEmit)
     {
@@ -63,7 +53,7 @@ public class AnimationController : MonoBehaviour
                     ActivateAnimatedView(k[0], k[1]);
                 }
             }
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
             ResetAnimatedView();
             foreach (var i in m_Cords)
             {
@@ -76,6 +66,15 @@ public class AnimationController : MonoBehaviour
             }
             yield return new WaitForSeconds(1f);
             ResetAnimatedView();
+        }
+    }
+
+    internal void FreeSpinCoinAnimate()
+    {
+        for (int i = 0; i < SocketManager.resultData.fsWinningSymbols.Count; i++)
+        {
+
+            m_AnimatedSlots[SocketManager.resultData.fsWinningSymbols[i][1]].slotImages[SocketManager.resultData.fsWinningSymbols[i][0]].GetComponent<ImageAnimation>().StartAnimation();
         }
     }
 
