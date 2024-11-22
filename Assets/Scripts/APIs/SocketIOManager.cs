@@ -44,8 +44,8 @@ public class SocketIOManager : MonoBehaviour
     [SerializeField]
     private string testToken;
 
-    protected string gameID = "SL-BT";
-    //protected string gameID = "";
+    //protected string gameID = "SL-BT";
+    protected string gameID = "";
 
     internal bool isLoaded = false;
 
@@ -247,7 +247,7 @@ public class SocketIOManager : MonoBehaviour
             if (json != null)
             {
                 this.manager.Socket.Emit(eventName, json);
-                Debug.Log("JSON data sent: " + json);
+                Debug.Log(string.Concat("<color=yellow><b>", "JSON data sent: " + json, "</b></color>"));
             }
             else
             {
@@ -273,7 +273,8 @@ public class SocketIOManager : MonoBehaviour
 
         string id = myData.id;
 
-        switch(id)
+
+        switch (id)
         {
             case "InitData":
                 {
@@ -281,9 +282,9 @@ public class SocketIOManager : MonoBehaviour
                     initUIData = myData.message.UIData;
                     playerdata = myData.message.PlayerData;
                     bonusdata = myData.message.BonusData;
+                    Debug.Log(string.Concat("<color=green><b>", jsonObject, "</b></color>"));
                     if (!SetInit)
                     {
-                        Debug.Log(string.Concat("<color=green><b>", jsonObject, "</b></color>"));
                         //List<string> LinesString = ConvertListListIntToListString(initialData.Lines);
                         List<string> InitialReels = ConvertListOfListsToStrings(initialData.Reel);
                         InitialReels = RemoveQuotes(InitialReels);
@@ -343,7 +344,7 @@ public class SocketIOManager : MonoBehaviour
         message.data = new BetData();
         message.data.currentBet = currBet;
         message.data.spins = 1;
-        message.data.currentLines = 20;
+        message.data.currentLines = 1;
         message.id = "SPIN";
         // Serialize message data to JSON
         string json = JsonUtility.ToJson(message);
@@ -472,6 +473,8 @@ public class GameData
     //public List<List<string>> symbolsToEmit { get; set; }
     public List<List<int>> resultMatrix { get; set; }
     public List<List<List<int>>> symbolsToEmit { get; set; }
+    public int isNewAdded { get; set; }
+    public List<List<int>> fsWinningSymbols { get; set; }
     public List<List<int>> WildMultipliers { get; set; }
     public double WinAmout { get; set; }
     //public FreeSpins freeSpins { get; set; }
@@ -505,6 +508,7 @@ public class Root
 {
     public string id { get; set; }
     public Message message { get; set; }
+    public string username { get; set; }
 }
 
 [Serializable]
@@ -533,7 +537,7 @@ public class Symbol
 
     // This property will hold the properly deserialized list of lists of integers
     [JsonIgnore]
-    public List<List<int>> Multiplier { get; private set; }
+    public List<List<double>> Multiplier { get; private set; }
 
     // Custom deserialization method to handle the conversion
     [OnDeserialized]
@@ -542,12 +546,12 @@ public class Symbol
         // Handle the case where multiplier is an object (empty in JSON)
         if (MultiplierObject is JObject)
         {
-            Multiplier = new List<List<int>>();
+            Multiplier = new List<List<double>>();
         }
         else
         {
             // Deserialize normally assuming it's an array of arrays
-            Multiplier = JsonConvert.DeserializeObject<List<List<int>>>(MultiplierObject.ToString());
+            Multiplier = JsonConvert.DeserializeObject<List<List<double>>>(MultiplierObject.ToString());
         }
     }
     public object defaultAmount { get; set; }
@@ -555,6 +559,9 @@ public class Symbol
     public object increaseValue { get; set; }
     public object description { get; set; }
     public int freeSpin { get; set; }
+    public int payout { get; set; }
+    public object mixedPayout { get; set; }
+    public object defaultPayout { get; set; }
 }
 [Serializable]
 public class PlayerData
@@ -562,6 +569,7 @@ public class PlayerData
     public double Balance { get; set; }
     public double haveWon { get; set; }
     public double currentWining { get; set; }
+    public double totalbet { get; set; }
 }
 [Serializable]
 public class AuthTokenData

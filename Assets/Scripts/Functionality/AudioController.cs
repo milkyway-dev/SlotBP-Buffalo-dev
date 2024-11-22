@@ -14,6 +14,7 @@ public class AudioController : MonoBehaviour
     [SerializeField] private AudioSource m_BigWin_Sound;
     [SerializeField] private AudioSource m_MegaWin_Sound;
     [SerializeField] private AudioSource m_GoldCount_Audio;
+    [SerializeField] private AudioSource m_Bull_Audio;
 
     private void Start()
     {
@@ -51,6 +52,11 @@ public class AudioController : MonoBehaviour
     internal void PlayGold_Enc()
     {
         if (m_MainAudioListener.enabled) m_GoldCount_Audio.Play();
+    }
+
+    internal void PlayBull_Audio()
+    {
+        if(m_MainAudioListener.enabled) m_Bull_Audio.Play();
     }
 
     internal void PlaySpinAudio(bool m_play_pause)
@@ -94,6 +100,7 @@ public class AudioController : MonoBehaviour
                 m_BigWin_Sound.mute = toggle;
                 m_MegaWin_Sound.mute = toggle;
                 m_FreeSpinEnc_Sound.mute = toggle;
+                m_Bull_Audio.mute = toggle;
                 break;
             case Sound.All:
                 m_NormalButton_Audio.mute = toggle;
@@ -104,6 +111,7 @@ public class AudioController : MonoBehaviour
                 m_MegaWin_Sound.mute = toggle;
                 m_FreeSpinEnc_Sound.mute = toggle;
                 m_BG_Music.mute = toggle;
+                m_Bull_Audio.mute = toggle;
                 break;
         }
     }
