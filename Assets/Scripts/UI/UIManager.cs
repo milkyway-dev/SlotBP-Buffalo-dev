@@ -473,11 +473,11 @@ public class UIManager : MonoBehaviour
         slotManager.FreeSpin(spins);
     }
 
-    internal void FreeSpinProcess(int spins)
+    internal void FreeSpinProcess(int spins, int newSpins)
     {
         FreeSpins = spins;
         if (FreeSpinPopup_Object) FreeSpinPopup_Object.SetActive(true);
-        if (Free_Text) Free_Text.text = spins.ToString() + " Free spins awarded.";
+        if (Free_Text) Free_Text.text = newSpins.ToString() + " Free spins awarded.";
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
     }
 
