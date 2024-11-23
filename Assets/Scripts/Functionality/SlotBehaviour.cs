@@ -161,7 +161,7 @@ public class SlotBehaviour : MonoBehaviour
         IsAutoSpin = false;
 
         if (SlotStart_Button) SlotStart_Button.onClick.RemoveAllListeners();
-        if (SlotStart_Button) SlotStart_Button.onClick.AddListener(delegate { StartSlots(); });
+        if (SlotStart_Button) SlotStart_Button.onClick.AddListener(delegate { StartSlots(); uiManager.CloseMenu(); });
 
         //if (BetPlus_Button) BetPlus_Button.onClick.RemoveAllListeners();
         //if (BetPlus_Button) BetPlus_Button.onClick.AddListener(delegate { ChangeBet(true); });
@@ -175,10 +175,11 @@ public class SlotBehaviour : MonoBehaviour
         if (m_BetButton) m_BetButton.onClick.AddListener(() =>
         {
             uiManager.OpenBetPanel();
+            uiManager.CloseMenu();
         });
 
         if (AutoSpin_Button) AutoSpin_Button.onClick.RemoveAllListeners();
-        if (AutoSpin_Button) AutoSpin_Button.onClick.AddListener(AutoSpin);
+        if (AutoSpin_Button) AutoSpin_Button.onClick.AddListener(delegate { AutoSpin(); uiManager.CloseMenu(); });
 
 
         if (AutoSpinStop_Button) AutoSpinStop_Button.onClick.RemoveAllListeners();
@@ -836,6 +837,7 @@ public class SlotBehaviour : MonoBehaviour
         if (BetMinus_Button) BetMinus_Button.interactable = toggle;
         if (BetPlus_Button) BetPlus_Button.interactable = toggle;
         if (m_BetButton) m_BetButton.interactable = toggle;
+        if (uiManager.Menu_Button) uiManager.Menu_Button.interactable = toggle;
     }
 
     //start the icons animation

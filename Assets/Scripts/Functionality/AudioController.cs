@@ -115,7 +115,7 @@ public class AudioController : MonoBehaviour
                 m_MutedSound = toggle;
                 break;
             case Sound.All:
-                Debug.Log("Toggle Is: " + toggle + " " + " Config Is: " + config);
+                //Debug.Log("Toggle Is: " + toggle + " " + " Config Is: " + config);
                 if (config || (!config && toggle))
                 {
                     m_NormalButton_Audio.mute = toggle;
