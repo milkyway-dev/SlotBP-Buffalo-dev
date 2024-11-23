@@ -13,7 +13,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Menu UI")]
     [SerializeField]
-    private Button Menu_Button;
+    internal Button Menu_Button;
     [SerializeField]
     private GameObject Menu_Object;
     [SerializeField]
@@ -217,6 +217,7 @@ public class UIManager : MonoBehaviour
     private bool isMusic = true;
     private bool isSound = true;
     private bool isExit = false;
+    private bool MenuOpen = false;
 
     private int FreeSpins;
 
@@ -274,23 +275,23 @@ public class UIManager : MonoBehaviour
         //if (About_Button) About_Button.onClick.RemoveAllListeners();
         //if (About_Button) About_Button.onClick.AddListener(delegate { OpenPopup(AboutPopup_Object); });
 
+        //if (AboutExit_Button) AboutExit_Button.onClick.RemoveAllListeners();
+        //if (AboutExit_Button) AboutExit_Button.onClick.AddListener(delegate { ClosePopup(AboutPopup_Object); });
+
         if (Info_Button) Info_Button.onClick.RemoveAllListeners();
-        if (Info_Button) Info_Button.onClick.AddListener(delegate { OpenPopup(Info_Object); });
+        if (Info_Button) Info_Button.onClick.AddListener(delegate { OpenPopup(Info_Object); CloseMenu(); });
 
         if (Info_Exit) Info_Exit.onClick.RemoveAllListeners();
         if (Info_Exit) Info_Exit.onClick.AddListener(delegate { ClosePopup(Info_Object); });
 
-        if (AboutExit_Button) AboutExit_Button.onClick.RemoveAllListeners();
-        if (AboutExit_Button) AboutExit_Button.onClick.AddListener(delegate { ClosePopup(AboutPopup_Object); });
-
         if (Paytable_Button) Paytable_Button.onClick.RemoveAllListeners();
-        if (Paytable_Button) Paytable_Button.onClick.AddListener(delegate { OpenPopup(PaytablePopup_Object); });
+        if (Paytable_Button) Paytable_Button.onClick.AddListener(delegate { OpenPopup(PaytablePopup_Object); CloseMenu(); });
 
         if (PaytableExit_Button) PaytableExit_Button.onClick.RemoveAllListeners();
         if (PaytableExit_Button) PaytableExit_Button.onClick.AddListener(delegate { ClosePopup(PaytablePopup_Object); });
 
         if (Settings_Button) Settings_Button.onClick.RemoveAllListeners();
-        if (Settings_Button) Settings_Button.onClick.AddListener(delegate { OpenPopup(SettingsPopup_Object); });
+        if (Settings_Button) Settings_Button.onClick.AddListener(delegate { OpenPopup(SettingsPopup_Object); CloseMenu(); });
 
         if (SettingsExit_Button) SettingsExit_Button.onClick.RemoveAllListeners();
         if (SettingsExit_Button) SettingsExit_Button.onClick.AddListener(delegate { ClosePopup(SettingsPopup_Object); });
@@ -304,6 +305,7 @@ public class UIManager : MonoBehaviour
         if (GameExit_Button) GameExit_Button.onClick.RemoveAllListeners();
         if (GameExit_Button) GameExit_Button.onClick.AddListener(delegate { 
             OpenPopup(QuitPopup_Object);
+            CloseMenu();
             Debug.Log("Quit event: pressed Big_X button");
             
             });
@@ -341,7 +343,7 @@ public class UIManager : MonoBehaviour
         if (FreeSpin_Button) FreeSpin_Button.onClick.AddListener(delegate{ StartFreeSpins(FreeSpins); });
 
         if (QuitSplash_button) QuitSplash_button.onClick.RemoveAllListeners();
-        if (QuitSplash_button) QuitSplash_button.onClick.AddListener(delegate { OpenPopup(QuitPopup_Object); });
+        if (QuitSplash_button) QuitSplash_button.onClick.AddListener(delegate { OpenPopup(QuitPopup_Object); CloseMenu(); });
 
         isMusic = true;
         isSound = true;
@@ -493,7 +495,7 @@ public class UIManager : MonoBehaviour
 
         DOTween.To(() => initAmount, (val) => initAmount = val, (double)amount, 5f).OnUpdate(() =>
         {
-            if (Win_Text) Win_Text.text = initAmount.ToString();
+            if (Win_Text) Win_Text.text = initAmount.ToString("F4");
         });
 
         DOVirtual.DelayedCall(6f, () =>
@@ -581,6 +583,7 @@ public class UIManager : MonoBehaviour
 
     private void OpenMenu()
     {
+        MenuOpen = true;
         audioController.PlayNormalButton();
         if (Menu_Object) Menu_Object.SetActive(false);
         if (Exit_Object) Exit_Object.SetActive(true);
@@ -604,34 +607,38 @@ public class UIManager : MonoBehaviour
         });
     }
 
-    private void CloseMenu()
+    internal void CloseMenu()
     {
-
-        if (audioController) audioController.PlayNormalButton();
-
-        DOTween.To(() => Info_RT.anchoredPosition, (val) => Info_RT.anchoredPosition = val, new Vector2(Info_RT.anchoredPosition.x, Info_RT.anchoredPosition.y - 375), 0.1f).OnUpdate(() =>
+        if (MenuOpen)
         {
-            LayoutRebuilder.ForceRebuildLayoutImmediate(Info_RT);
-        });
+            if (audioController) audioController.PlayNormalButton();
 
-        DOTween.To(() => Paytable_RT.anchoredPosition, (val) => Paytable_RT.anchoredPosition = val, new Vector2(Paytable_RT.anchoredPosition.x, Paytable_RT.anchoredPosition.y - 125), 0.1f).OnUpdate(() =>
-        {
-            LayoutRebuilder.ForceRebuildLayoutImmediate(Paytable_RT);
-        });
+            DOTween.To(() => Info_RT.anchoredPosition, (val) => Info_RT.anchoredPosition = val, new Vector2(Info_RT.anchoredPosition.x, Info_RT.anchoredPosition.y - 375), 0.1f).OnUpdate(() =>
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(Info_RT);
+            });
 
-        DOTween.To(() => Settings_RT.anchoredPosition, (val) => Settings_RT.anchoredPosition = val, new Vector2(Settings_RT.anchoredPosition.x, Settings_RT.anchoredPosition.y - 250), 0.1f).OnUpdate(() =>
-        {
-            LayoutRebuilder.ForceRebuildLayoutImmediate(Settings_RT);
-        });
+            DOTween.To(() => Paytable_RT.anchoredPosition, (val) => Paytable_RT.anchoredPosition = val, new Vector2(Paytable_RT.anchoredPosition.x, Paytable_RT.anchoredPosition.y - 125), 0.1f).OnUpdate(() =>
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(Paytable_RT);
+            });
 
-        DOVirtual.DelayedCall(0.1f, () =>
-         {
-             if (Menu_Object) Menu_Object.SetActive(true);
-             if (Exit_Object) Exit_Object.SetActive(false);
-             if (Info_RT.gameObject) Info_RT.gameObject.SetActive(false);
-             if (Paytable_Object) Paytable_Object.SetActive(false);
-             if (Settings_Object) Settings_Object.SetActive(false);
-         });
+            DOTween.To(() => Settings_RT.anchoredPosition, (val) => Settings_RT.anchoredPosition = val, new Vector2(Settings_RT.anchoredPosition.x, Settings_RT.anchoredPosition.y - 250), 0.1f).OnUpdate(() =>
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(Settings_RT);
+            });
+
+            DOVirtual.DelayedCall(0.1f, () =>
+             {
+                 if (Menu_Object) Menu_Object.SetActive(true);
+                 if (Exit_Object) Exit_Object.SetActive(false);
+                 if (Info_RT.gameObject) Info_RT.gameObject.SetActive(false);
+                 if (Paytable_Object) Paytable_Object.SetActive(false);
+                 if (Settings_Object) Settings_Object.SetActive(false);
+             });
+
+            MenuOpen = false;
+        }
     }
 
     private void OpenPopup(GameObject Popup)
