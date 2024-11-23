@@ -356,7 +356,7 @@ public class SlotBehaviour : MonoBehaviour
         BetCounter = 0;
         if (LineBet_text) LineBet_text.text = SocketManager.initialData.Bets[BetCounter].ToString();
         if (TotalBet_text) TotalBet_text.text = (SocketManager.initialData.Bets[BetCounter]).ToString();
-        if (TotalWin_text) TotalWin_text.text = "0.00";
+        if (TotalWin_text) TotalWin_text.text = "0.000";
         if (Balance_text) Balance_text.text = SocketManager.playerdata.Balance.ToString("f2");
         currentBalance = SocketManager.playerdata.Balance;
         currentTotalBet = SocketManager.initialData.Bets[BetCounter];
@@ -569,9 +569,9 @@ public class SlotBehaviour : MonoBehaviour
 
         CheckPopups = true;
 
-        if (TotalWin_text) TotalWin_text.text = SocketManager.playerdata.currentWining.ToString("f2");
+        if (TotalWin_text) TotalWin_text.text = SocketManager.playerdata.currentWining.ToString("f3");
 
-        if (Balance_text) Balance_text.text = SocketManager.playerdata.Balance.ToString("f2");
+        if (Balance_text) Balance_text.text = SocketManager.playerdata.Balance.ToString("f3");
 
         currentBalance = SocketManager.playerdata.Balance;
 
