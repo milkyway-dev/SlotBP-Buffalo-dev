@@ -211,6 +211,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private List<Button> m_BetButtons;
 
+    [SerializeField] private Button SkipWinAnimation;
+
     [SerializeField]
     private List<float> m_DummyBetValues;
 
@@ -219,49 +221,10 @@ public class UIManager : MonoBehaviour
     private bool isExit = false;
     private bool MenuOpen = false;
 
-    private int FreeSpins;
+    internal int FreeSpins;
+    private Tween WinPopupTextTween;
+    private Tween ClosePopupTween;
 
-
-    //private void Awake()
-    //{
-    //    //if (Loading_Object) Loading_Object.SetActive(true);
-    //    //StartCoroutine(LoadingRoutine());
-    //    SimulateClickByDefault();
-    //}
-
-    private IEnumerator LoadingRoutine()
-    {
-        StartCoroutine(LoadingTextAnimate());
-        float imageFill = 0f;
-        DOTween.To(() => imageFill, (val) => imageFill = val, 0.7f, 2f).OnUpdate(() =>
-        {
-            if (Loading_Image) Loading_Image.fillAmount = imageFill;
-            if (LoadPercent_Text) LoadPercent_Text.text = (100 * imageFill).ToString("f0") + "%";
-        });
-        yield return new WaitForSecondsRealtime(2);
-        yield return new WaitUntil(() => socketManager.isLoaded);
-        DOTween.To(() => imageFill, (val) => imageFill = val, 1, 1f).OnUpdate(() =>
-        {
-            if (Loading_Image) Loading_Image.fillAmount = imageFill;
-            if (LoadPercent_Text) LoadPercent_Text.text = (100 * imageFill).ToString("f0") + "%";
-        });
-        yield return new WaitForSecondsRealtime(1f);
-        if (Loading_Object) Loading_Object.SetActive(false);
-        StopCoroutine(LoadingTextAnimate());
-    }
-
-    private IEnumerator LoadingTextAnimate()
-    {
-        while (true)
-        {
-            if (Loading_Text) Loading_Text.text = "Loading.";
-            yield return new WaitForSeconds(1f);
-            if (Loading_Text) Loading_Text.text = "Loading..";
-            yield return new WaitForSeconds(1f);
-            if (Loading_Text) Loading_Text.text = "Loading...";
-            yield return new WaitForSeconds(1f);
-        }
-    }
 
     private void Start()
     {
@@ -360,15 +323,11 @@ public class UIManager : MonoBehaviour
             m_BetPanel.SetActive(false);
         });
 
+        if (SkipWinAnimation) SkipWinAnimation.onClick.RemoveAllListeners();
+        if (SkipWinAnimation) SkipWinAnimation.onClick.AddListener(SkipWin);
+
         //AssignBetButtons(m_DummyBetValues);
 
-    }
-
-    private void SimulateClickByDefault()
-    {
-        Debug.Log("Awaken The Game...");
-        m_AwakeGameButton.onClick.AddListener(() => { Debug.Log("Called The Game..."); });
-        m_AwakeGameButton.onClick.Invoke();
     }
 
     #region [[===BET BUTTONS HANDLING===]]
@@ -412,6 +371,23 @@ public class UIManager : MonoBehaviour
         m_BetPanel.SetActive(true);
     }
     #endregion
+
+    void SkipWin()
+    {
+        Debug.Log("Skip win called");
+        if (ClosePopupTween != null)
+        {
+            ClosePopupTween.Kill();
+            ClosePopupTween = null;
+        }
+        if (WinPopupTextTween != null)
+        {
+            WinPopupTextTween.Kill();
+            WinPopupTextTween = null;
+        }
+        ClosePopup(WinPopup_Object);
+        slotManager.CheckPopups = false;
+    }
 
     internal void LowBalPopup()
     {
@@ -481,10 +457,15 @@ public class UIManager : MonoBehaviour
 
     internal void FreeSpinProcess(int spins, int newSpins)
     {
+        int ExtraSpins = spins - FreeSpins;
         FreeSpins = spins;
+        Debug.Log(ExtraSpins);
         if (FreeSpinPopup_Object) FreeSpinPopup_Object.SetActive(true);
-        if (Free_Text) Free_Text.text = newSpins.ToString() + " Free spins awarded.";
+        if (Free_Text) Free_Text.text = ExtraSpins.ToString() + " Free spins awarded.";
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
+        DOVirtual.DelayedCall(2f, () => {
+            StartFreeSpins(spins);
+        });
     }
 
     private void StartPopupAnim(double amount)
@@ -493,12 +474,12 @@ public class UIManager : MonoBehaviour
         if (WinPopup_Object) WinPopup_Object.SetActive(true);
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
 
-        DOTween.To(() => initAmount, (val) => initAmount = val, (double)amount, 5f).OnUpdate(() =>
+        WinPopupTextTween = DOTween.To(() => initAmount, (val) => initAmount = val, (double)amount, 5f).OnUpdate(() =>
         {
-            if (Win_Text) Win_Text.text = initAmount.ToString("F4");
+            if (Win_Text) Win_Text.text = initAmount.ToString("F3");
         });
 
-        DOVirtual.DelayedCall(6f, () =>
+        ClosePopupTween = DOVirtual.DelayedCall(6f, () =>
         {
             ClosePopup(WinPopup_Object);
             slotManager.CheckPopups = false;
@@ -532,19 +513,19 @@ public class UIManager : MonoBehaviour
             string text = null;
             if (paylines.symbols[i].Multiplier[0][0] != 0)
             {
-                text += "<color=yellow>5x - </color>" + paylines.symbols[i].Multiplier[0][0];
+                text += "<color=yellow>5x - </color>" + paylines.symbols[i].Multiplier[0][0] + "x";
             }
             if (paylines.symbols[i].Multiplier[1][0] != 0)
             {
-                text += "<color=yellow>\n4x - </color>" + paylines.symbols[i].Multiplier[1][0];
+                text += "<color=yellow>\n4x - </color>" + paylines.symbols[i].Multiplier[1][0] + "x";
             }
             if (paylines.symbols[i].Multiplier[2][0] != 0)
             {
-                text += "<color=yellow>\n3x - </color>" + paylines.symbols[i].Multiplier[2][0];
+                text += "<color=yellow>\n3x - </color>" + paylines.symbols[i].Multiplier[2][0] + "x";
             }
             if(paylines.symbols[i].Multiplier[3][0] != 0)
             {
-                text += "<color=yellow>\n2x - </color>" + paylines.symbols[i].Multiplier[3][0];
+                text += "<color=yellow>\n2x - </color>" + paylines.symbols[i].Multiplier[3][0] + "x";
             }
             if (SymbolsText[i]) SymbolsText[i].text = text;
         }
