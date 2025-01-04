@@ -65,7 +65,7 @@ public class SlotBehaviour : MonoBehaviour
 
     private bool StopSpinToggle;
     private float SpinDelay = 0.2f;
-    private bool IsTurboOn;
+    internal bool IsTurboOn;
     private bool WasAutoSpinOn;
 
     [Header("Animated Sprites")]
@@ -586,7 +586,6 @@ public class SlotBehaviour : MonoBehaviour
                 yield return new WaitForSeconds(0.1f);
                 if (StopSpinToggle)
                 {
-                    StopSpinToggle = false;
                     break;
                 }
             }
@@ -875,7 +874,7 @@ public class SlotBehaviour : MonoBehaviour
             audioController.PlayWin(Sound.MegaWin);
             uiManager.PopulateWin(2, SocketManager.resultData.WinAmout);
         }
-        else if (SocketManager.resultData.WinAmout > 0)
+        else if (SocketManager.resultData.WinAmout > 0 && currentTotalBet<SocketManager.resultData.WinAmout)
         {
             audioController.PlayWin(Sound.NormalWin);
             uiManager.PopulateWin(3, SocketManager.resultData.WinAmout);

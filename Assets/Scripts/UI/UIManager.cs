@@ -473,13 +473,18 @@ public class UIManager : MonoBehaviour
         double initAmount = 0.00;
         if (WinPopup_Object) WinPopup_Object.SetActive(true);
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
-
-        WinPopupTextTween = DOTween.To(() => initAmount, (val) => initAmount = val, (double)amount, 5f).OnUpdate(() =>
+        float delay=1.4f;
+        float closeDelay=1.7f;
+        if(slotManager.IsTurboOn){
+            delay=.7f;
+            closeDelay=1f;
+        }
+        WinPopupTextTween = DOTween.To(() => initAmount, (val) => initAmount = val, (double)amount, delay).OnUpdate(() =>
         {
             if (Win_Text) Win_Text.text = initAmount.ToString("F3");
         });
 
-        ClosePopupTween = DOVirtual.DelayedCall(6f, () =>
+        ClosePopupTween = DOVirtual.DelayedCall(closeDelay, () =>
         {
             ClosePopup(WinPopup_Object);
             slotManager.CheckPopups = false;
