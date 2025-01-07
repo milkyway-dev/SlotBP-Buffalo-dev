@@ -539,7 +539,9 @@ public class UIManager : MonoBehaviour
         {
             if (paylines.symbols[i].Name.ToUpper() == "FREESPIN")
             {
-                if (FreeSpin_Text) FreeSpin_Text.text = paylines.symbols[i].description.ToString();
+                //if (FreeSpin_Text) FreeSpin_Text.text = paylines.symbols[i].description.ToString();
+                string freespintext = $"Free game \n2x {paylines.symbols[i].Multiplier[3][1]} FREE SPINS \n3x {paylines.symbols[i].Multiplier[2][1]} FREE SPINS \n4x {paylines.symbols[i].Multiplier[1][1]} FREE SPINS \n5x {paylines.symbols[i].Multiplier[0][1]} FREE SPINS";
+                if (FreeSpin_Text) FreeSpin_Text.text = freespintext;
             }
             if (paylines.symbols[i].Name.ToUpper() == "SCATTER")
             {
