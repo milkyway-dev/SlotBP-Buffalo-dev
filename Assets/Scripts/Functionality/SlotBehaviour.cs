@@ -195,13 +195,26 @@ public class SlotBehaviour : MonoBehaviour
 
 
         if (AutoSpinStop_Button) AutoSpinStop_Button.onClick.RemoveAllListeners();
-        if (AutoSpinStop_Button) AutoSpinStop_Button.onClick.AddListener(StopAutoSpin);
+        if (AutoSpinStop_Button) AutoSpinStop_Button.onClick.AddListener(() =>
+        {
+            audioController.PlayNormalButton();
+            StopAutoSpin();
+        });
 
         if (StopSpin_Button) StopSpin_Button.onClick.RemoveAllListeners();
-        if (StopSpin_Button) StopSpin_Button.onClick.AddListener(() => { StopSpinToggle = true; StopSpin_Button.gameObject.SetActive(false); });
+        if (StopSpin_Button) StopSpin_Button.onClick.AddListener(() =>
+        {
+            audioController.PlayNormalButton();
+            StopSpinToggle = true;
+            StopSpin_Button.gameObject.SetActive(false);
+        });
 
         if (Turbo_Button) Turbo_Button.onClick.RemoveAllListeners();
-        if (Turbo_Button) Turbo_Button.onClick.AddListener(TurboToggle);
+        if (Turbo_Button) Turbo_Button.onClick.AddListener(() =>
+        {
+            audioController.PlayNormalButton();
+            TurboToggle();
+        });
 
         if (FSBoard_Object) FSBoard_Object.SetActive(false);
 
@@ -613,7 +626,7 @@ public class SlotBehaviour : MonoBehaviour
 
         if (SocketManager.playerdata.currentWining > 0)
         {
-            SpinDelay = 1.2f;
+            SpinDelay = 1.5f;
         }
         else
         {
